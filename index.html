@@ -14,6 +14,7 @@
             text-align: center; 
             font-family: sans-serif; 
             padding-top: 60px; 
+            margin: 0;
         }
         h1 { 
             color: #ff4757; 
@@ -26,6 +27,95 @@
             border-radius: 15px;
             box-shadow: 0px 10px 25px rgba(0,0,0,0.6);
         }
+
+        /* SAĞDAKİ SABİT KEDİŞLER BUTONU */
+        .kedi-butonu {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0px 5px 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .kedi-butonu:hover {
+            background-color: #ff6b81;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* AÇILAN PENCERE ARKA PLANI (MODAL) */
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* İÇERİK KUTUSU */
+        .modal-icerik {
+            background-color: #2f3542;
+            padding: 20px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* KAPATMA BUTONU (X) */
+        .kapat-butonu {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            color: #a4b0be;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .kapat-butonu:hover {
+            color: #ff4757;
+        }
+
+        /* KEDİ FOTOĞRAFLARI */
+        .kedi-foto {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        /* FOTOĞRAFI DEĞİŞTİRME BUTONU */
+        .degistir-butonu {
+            background-color: #2ed573;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .degistir-butonu:hover {
+            background-color: #26af5f;
+        }
     </style>
 </head>
 <body>
@@ -35,6 +125,57 @@
 
     <!-- Ve senin görselin -->
     <img src="resim.jpg" alt="Sitemizin Görseli" class="site-gorseli">
+
+    <!-- SAĞDAKİ KEDİŞLER BUTONU -->
+    <button class="kedi-butonu" onclick="modaliAc()">🐱 Kedişler</button>
+
+    <!-- PENCERE AÇILDIĞINDA GÖRÜNECEK ALAN -->
+    <div id="kediPencerem" class="modal">
+        <div class="modal-icerik">
+            <span class="kapat-butonu" onclick="modaliKapat()">&times;</span>
+            <h2 style="margin-top: 0; color: #ff4757;">Günün Kedişi! 🐾</h2>
+            
+            <!-- İlk açılışta görünecek olan ilk kedi fotoğrafın -->
+            <img id="kediResmi" src="Image (9).jpg" alt="Kedi" class="kedi-foto">
+            
+            <button class="degistir-butonu" onclick="kediDegistir()">Başka Kedi Göster 🔄</button>
+        </div>
+    </div>
+
+    <!-- BUTONLARI ÇALIŞTIRAN SİHİRLİ KODLAR (JAVASCRIPT) -->
+    <script>
+        // Senin klasöründeki kedi fotoğraflarının tam isim listesi
+        const kediListesi = [
+            "Image (9).jpg",
+            "Image (10).jpg",
+            "Image (11).jpg",
+            "Image (12).jpg",
+            "Image (13).jpg"
+        ];
+        
+        let sira = 0;
+
+        function modaliAc() {
+            document.getElementById("kediPencerem").style.display = "flex";
+        }
+
+        function modaliKapat() {
+            document.getElementById("kediPencerem").style.display = "none";
+        }
+
+        function kediDegistir() {
+            sira = (sira + 1) % kediListesi.length;
+            document.getElementById("kediResmi").src = kediListesi[sira];
+        }
+
+        // Pencere dışına tıklanınca kapatma özelliği
+        window.onclick = function(event) {
+            const modal = document.getElementById("kediPencerem");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 
 </body>
 </html>
