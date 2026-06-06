@@ -4,7 +4,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Armut Atis - Ask Macerasi</title>
+    <title>Uçan Tekme Macerası</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,6 @@
             font-family: 'Caveat', cursive;
             font-size: 4.5rem; 
             font-weight: 700;
-            letter-spacing: 1px;
             background: linear-gradient(to right, #ff4757, #ff6b81, #ff7f50);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -39,7 +38,6 @@
             color: #94a3b8;
             font-size: 1.05rem;
             margin-bottom: 20px;
-            font-weight: 400;
         }
 
         .hud-instructions {
@@ -65,7 +63,7 @@
         }
 
         canvas {
-            background: #ffffff; /* El çizimi net görünsün diye bembeyaz bir kağıt efekti */
+            background: #ffffff; /* Beyaz kağıt efekti arka plan */
             border-radius: 24px;
             border: 4px solid #ff4757;
             box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
@@ -91,12 +89,8 @@
             font-weight: 600;
             border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 10px 30px -10px rgba(255, 71, 87, 0.2);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
             z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
         .kedi-butonu:hover {
@@ -122,7 +116,7 @@
         }
         
         .modal.aktif { display: flex; opacity: 1; }
-        .modal-icerik { background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.1); padding: 32px; border-radius: 28px; max-width: 480px; width: 90%; position: relative; }
+        .modal-icerik { background: #1e293b; padding: 32px; border-radius: 28px; max-width: 480px; width: 90%; position: relative; }
         .kapat-butonu { position: absolute; top: 20px; right: 24px; font-size: 26px; color: #64748b; cursor: pointer; }
         .kedi-foto { width: 100%; height: 320px; object-fit: cover; border-radius: 20px; margin: 20px 0; }
         .degistir-butonu { background: #2ed573; color: white; border: none; padding: 14px 24px; font-size: 1rem; border-radius: 14px; cursor: pointer; font-weight: 600; width: 100%; }
@@ -130,291 +124,216 @@
 </head>
 <body>
 
-    <h1>Armut Atis ❤️</h1>
-    <div class="subtitle">Bizim Çizimimiz Canlanıyor!</div>
+    <h1>Hesaplaşma Zamanı! 🥷</h1>
+    <div class="subtitle">Image (8)_2.jpg Çizimindeki Kız Uçan Tekme Atıyor!</div>
     <div class="hud-instructions">
-        Yerdeyken <span>SPACE (Boşluk)</span>: Beraber Zıplarlar | Havada tekrar <span>SPACE</span>: 💥 <span>UÇAN TEKME!</span>
+        <span>SPACE (Boşluk Tuşu)</span> veya <span>Ekrana Tıkla</span>: Kız Havalanıp Uçan Tekme Atar!
     </div>
 
-    <!-- OYUN ALANI -->
     <div class="oyun-konteyner">
         <canvas id="oyunTuvali" width="900" height="500"></canvas>
     </div>
 
-    <!-- SAĞDAKİ BUTON -->
-    <button class="kedi-butonu" onclick="modaliAc()">
-        <span>🐱</span> Kedisler
-    </button>
+    <button class="kedi-butonu" onclick="modaliAc()">🐱 Kedisler</button>
 
-    <!-- KEDİ FOTOĞRAFLARI MODAL ALANI -->
     <div id="kediPencerem" class="modal" onclick="pencereDisiKapat(event)">
         <div class="modal-icerik">
             <span class="kapat-butonu" onclick="modaliKapat()">&times;</span>
-            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600; color: #ff4757;">Günün Kedisi! 🐾</h2>
+            <h2 style="margin: 0; font-size: 1.5rem; color: #ff4757;">Günün Kedisi! 🐾</h2>
             <img id="kediResmi" src="Image (9).jpg" alt="Kedi" class="kedi-foto">
             <button class="degistir-butonu" onclick="kediDegistir()">Başka Kedi Göster 🔄</button>
         </div>
     </div>
 
     <script>
-        // --- 1. GALERİ MOTORU ---
-        const kediListesi = [
-            "Image (9).jpg", "Image (10).jpg", "Image (11).jpg", 
-            "Image (12).jpg", "Image (13).jpg", "Image (14).jpg", "Image (15).jpg"
-        ];
+        // --- KEDİ GALERİSİ ---
+        const kediListesi = ["Image (9).jpg", "Image (10).jpg", "Image (11).jpg", "Image (12).jpg", "Image (13).jpg", "Image (14).jpg", "Image (15).jpg"];
         let sira = 0;
         const modal = document.getElementById("kediPencerem");
-
-        function modaliAc() {
-            modal.style.display = "flex";
-            setTimeout(() => modal.classList.add("aktif"), 10);
-        }
-        function modaliKapat() {
-            modal.classList.remove("aktif");
-            setTimeout(() => modal.style.display = "none", 300);
-        }
-        function kediDegistir() {
-            sira = (sira + 1) % kediListesi.length;
-            document.getElementById("kediResmi").src = kediListesi[sira];
-        }
+        function modaliAc() { modal.style.display = "flex"; setTimeout(() => modal.classList.add("aktif"), 10); }
+        function modaliKapat() { modal.classList.remove("aktif"); setTimeout(() => modal.style.display = "none", 300); }
+        function kediDegistir() { sira = (sira + 1) % kediListesi.length; document.getElementById("kediResmi").src = kediListesi[sira]; }
         function pencereDisiKapat(event) { if (event.target === modal) modaliKapat(); }
 
-
-        // --- 2. CANLANDIRILMIŞ ÇİZİM OYUN MOTORU ---
+        // --- OYUN MOTORU ---
         const canvas = document.getElementById("oyunTuvali");
         const ctx = canvas.getContext("2d");
 
-        let skor = 0;
-        let can = 3;
-        let oyunBitti = false;
-        let oyunHizi = 5.5;
         let frame = 0;
+        let tekmeSayisi = 0;
+        let parcaciklar = [];
+        let efektYazilari = [];
 
-        let kalpler = [];
-        let dusmanlar = [];
-        let yazilar = []; 
-
-        // Tepelerin/Çimenlerin Kayma Pozisyonu
-        let zeminX = 0;
-
-        // İki Karakteri Tek Bir Nesne Olarak Yönetiyoruz (El Ele Koşan Çift)
-        const cift = {
-            x: 120,
-            y: 310,
-            genislik: 110,
-            yukseklik: 110,
-            yercekimi: 0.6,
-            hizY: 0,
+        // KIZ KARAKTER (Saldırgan)
+        const kiz = {
+            startX: 150,
+            x: 150,
+            y: 300,
             hizX: 0,
-            ziplamaGucu: -14,
-            yerdeMi: true,
-            tekmeAtiyorMu: false,
-            tekmeFrame: 0,
-            ziplamaSayisi: 0
+            hizY: 0,
+            durum: "yuruyor", // yuruyor, havalaniyor, tekme, geriDonuyor
+            animFrame: 0
         };
 
-        function eylemTetikle() {
-            if (oyunBitti) {
-                yenidenBaslat();
-                return;
-            }
+        // ERKEK KARAKTER (Gözlüklü & Havalı Defans)
+        const erkek = {
+            x: 600,
+            y: 295,
+            sarsilmaX: 0,
+            durum: "normal" // normal, darbeAldi
+        };
 
-            if (cift.yerdeMi) {
-                cift.hizY = cift.ziplamaGucu;
-                cift.yerdeMi = false;
-                cift.ziplamaSayisi = 1;
-                yaratKalpEfekti(cift.x + 50, cift.y + 50, 4);
-            } else if (cift.ziplamaSayisi === 1) {
-                cift.tekmeAtiyorMu = true;
-                cift.tekmeFrame = 20; 
-                cift.hizY = -2;       
-                cift.hizX = 10;       
-                cift.ziplamaSayisi = 2;
-                
-                yazilar.push({
-                    x: cift.x + 80,
-                    y: cift.y - 20,
-                    metin: "ASK TEKMESI! ❤️",
-                    omur: 30,
-                    renk: "#ff4757"
-                });
+        function tetikleUcanTekme() {
+            if (kiz.durum === "yuruyor") {
+                kiz.durum = "havalaniyor";
+                kiz.hizY = -12;
+                kiz.hizX = 14; // İleri doğru fırlama
             }
         }
 
-        window.addEventListener("keydown", (e) => {
-            if (e.code === "Space") {
-                e.preventDefault();
-                eylemTetikle();
-            }
-        });
-        canvas.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-            eylemTetikle();
-        });
+        window.addEventListener("keydown", (e) => { if (e.code === "Space") { e.preventDefault(); tetikleUcanTekme(); } });
+        canvas.addEventListener("mousedown", (e) => { e.preventDefault(); tetikleUcanTekme(); });
 
-        // Çizim Tarzı Kalp Efekti Fonksiyonu
-        function drawHeart(x, y, size, color) {
+        // Çizim Tarzı Kalp Çizimi
+        function drawHeart(x, y, size, color, broken = false) {
             ctx.save();
             ctx.beginPath();
             ctx.translate(x, y);
-            ctx.moveTo(0, 0);
-            ctx.bezierCurveTo(-size/2, -size/2, -size, size/3, 0, size);
-            ctx.bezierCurveTo(size, size/3, size/2, -size/2, 0, 0);
-            ctx.fillStyle = color;
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "#b3001e";
-            ctx.stroke();
+            
+            if (broken) {
+                // Kırık Kalp Sol Parça
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-size/2, -size/2, -size, size/3, -2, size);
+                ctx.lineTo(-2, 0);
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                // Kırık Kalp Sağ Parça
+                ctx.beginPath();
+                ctx.moveTo(2, 0);
+                ctx.lineTo(2, size);
+                ctx.bezierCurveTo(size, size/3, size/2, -size/2, 2, 0);
+                ctx.fill();
+            } else {
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-size/2, -size/2, -size, size/3, 0, size);
+                ctx.bezierCurveTo(size, size/3, size/2, -size/2, 0, 0);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = "#b3001e";
+                ctx.stroke();
+            }
             ctx.restore();
         }
 
-        function yaratKalpEfekti(x, y, adet) {
-            for (let i = 0; i < adet; i++) {
-                kalpler.push({
-                    x: x,
-                    y: y,
-                    hizX: (Math.random() - 0.5) * 6,
-                    hizY: (Math.random() - 0.7) * 5,
-                    boyut: Math.random() * 10 + 8,
-                    omur: Math.random() * 25 + 15,
-                    renk: Math.random() > 0.2 ? "#ff4757" : "#ff6b81"
-                });
-            }
-        }
-
-        function dusmanEkle() {
-            if (frame % 100 === 0) {
-                let tip = Math.random() > 0.5 ? "yer" : "gok";
-                if (tip === "yer") {
-                    dusmanlar.push({
-                        x: canvas.width + 50,
-                        y: 375,
-                        genislik: 35,
-                        yukseklik: 35,
-                        tip: "yer"
-                    });
-                } else {
-                    dusmanlar.push({
-                        x: canvas.width + 50,
-                        y: 220 + Math.random() * 50,
-                        genislik: 30,
-                        yukseklik: 30,
-                        tip: "gok",
-                        salinim: Math.random() * 5
-                    });
-                }
-            }
-        }
-
         function guncelle() {
-            if (oyunBitti) return;
             frame++;
+            kiz.animFrame++;
 
-            // Çimenli Tepelerin Kayma Hızı
-            zeminX -= oyunHizi;
-            if (zeminX <= -300) zeminX = 0;
+            // Kızın Hareket Durum Makinesi
+            if (kiz.durum === "havalaniyor") {
+                kiz.x += kiz.hizX;
+                kiz.y += kiz.hizY;
+                kiz.hizY += 0.5; // Yerçekimi efekti
 
-            // Fizik
-            cift.hizY += cift.yercekimi;
-            cift.y += cift.hizY;
-
-            if (cift.tekmeAtiyorMu) {
-                cift.x += cift.hizX;
-                cift.hizX *= 0.90; 
-                cift.tekmeFrame--;
-                
-                if (frame % 3 === 0) {
-                    yaratKalpEfekti(cift.x + 40, cift.y + 50, 1);
+                // En tepe noktaya yakınken tekme pozisyonuna geç
+                if (kiz.hizY > -2) {
+                    kiz.durum = "tekme";
                 }
+            } else if (kiz.durum === "tekme") {
+                kiz.x += kiz.hizX * 1.2;
+                kiz.y += kiz.hizY;
+                kiz.hizY += 0.6;
 
-                if (cift.tekmeFrame <= 0) {
-                    cift.tekmeAtiyorMu = false;
-                }
-            } else {
-                if (cift.x > 120) cift.x -= 2;
-            }
+                // Erkek Karakterle Çarpışma Testi
+                if (kiz.x + 80 >= erkek.x + erkek.sarsilmaX) {
+                    // DARBE ANI!
+                    erkek.durum = "darbeAldi";
+                    erkek.sarsilmaX = 25;
+                    kiz.durum = "geriDonuyor";
+                    kiz.hizX = -10;
+                    kiz.hizY = -5;
+                    tekmeSayisi++;
 
-            // Çimen Seviyesine İniş Kontrolü
-            if (cift.y >= 300) {
-                cift.y = 300;
-                cift.hizY = 0;
-                if (!cift.yerdeMi) {
-                    cift.yerdeMi = true;
-                    cift.ziplamaSayisi = 0;
-                    cift.tekmeAtiyorMu = false;
-                }
-            }
-
-            dusmanEkle();
-
-            // Çarpışma Testleri
-            for (let i = dusmanlar.length - 1; i >= 0; i--) {
-                let d = dusmanlar[i];
-                d.x -= oyunHizi;
-
-                if (d.tip === "gok") {
-                    d.y += Math.sin(frame * 0.07 + d.salinim) * 1.5;
-                }
-
-                let vuruşAlanıX = cift.tekmeAtiyorMu ? cift.genislik + 30 : cift.genislik;
-                if (cift.x < d.x + d.genislik &&
-                    cift.x + vuruşAlanıX > d.x &&
-                    cift.y < d.y + d.yukseklik &&
-                    cift.y + cift.yukseklik > d.y) {
-                    
-                    if (cift.tekmeAtiyorMu) {
-                        // Başarılı Tekme!
-                        yaratKalpEfekti(d.x, d.y, 8);
-                        yazilar.push({
-                            x: d.x, y: d.y - 20,
-                            metin: "BOOM! ❤️", omur: 20, renk: "#ff4757"
+                    // Kırık kalp parçacıkları saçılması
+                    for (let i = 0; i < 8; i++) {
+                        parcaciklar.push({
+                            x: erkek.x + 10,
+                            y: erkek.y + 20,
+                            hizX: (Math.random() - 0.3) * 8,
+                            hizY: (Math.random() - 0.7) * 7,
+                            boyut: Math.random() * 12 + 10,
+                            omur: 30
                         });
-                        dusmanlar.splice(i, 1);
-                        skor += 20;
-                        oyunHizi += 0.12;
-                    } else {
-                        // Hasar Durumu
-                        dusmanlar.splice(i, 1);
-                        can--;
-                        yazilar.push({
-                            x: cift.x + 30, y: cift.y - 20,
-                            metin: "DİKKAT! 💔", omur: 25, renk: "#b3001e"
-                        });
-                        if (can <= 0) oyunBitti = true;
                     }
-                } else if (d.x + d.genislik < 0) {
-                    dusmanlar.splice(i, 1);
-                    skor += 10;
+
+                    // Eğlenceli Yazı Efektleri
+                    const kelimeler = ["BAM!", "AH!", "OUCH!", "KAPAAK!", "ISKALAMADI!"];
+                    efektYazilari.push({
+                        x: erkek.x - 20,
+                        y: erkek.y - 40,
+                        metin: kelimeler[Math.floor(Math.random() * kelimeler.length)],
+                        omur: 25
+                    });
+                }
+
+                // Iskalama Durumunda Yere Çakılma Emniyeti
+                if (kiz.y >= 300) {
+                    kiz.y = 300;
+                    kiz.durum = "geriDonuyor";
+                    kiz.hizX = -8;
+                }
+            } else if (kiz.durum === "geriDonuyor") {
+                kiz.x += kiz.hizX;
+                kiz.y += kiz.hizY;
+                kiz.hizY += 0.5;
+
+                if (kiz.y >= 300) {
+                    kiz.y = 300;
+                    kiz.hizY = 0;
+                }
+
+                if (kiz.x <= kiz.startX) {
+                    kiz.x = kiz.startX;
+                    kiz.durum = "yuruyor";
                 }
             }
 
-            // Efekt Kalplerini Güncelle
-            for (let i = kalpler.length - 1; i >= 0; i--) {
-                let p = kalpler[i];
-                p.x += p.hizX;
-                p.y += p.hizY;
-                p.omur--;
-                if (p.omur <= 0) kalpler.splice(i, 1);
+            // Erkeğin sarsıntı sönümlemesi
+            if (erkek.durum === "darbeAldi") {
+                erkek.sarsilmaX *= 0.85;
+                if (erkek.sarsilmaX < 0.5) {
+                    erkek.sarsilmaX = 0;
+                    erkek.durum = "normal";
+                }
             }
 
-            // Yazıları Güncelle
-            for (let i = yazilar.length - 1; i >= 0; i--) {
-                yazilar[i].y -= 0.8;
-                yazilar[i].omur--;
-                if (yazilar[i].omur <= 0) yazilar.splice(i, 1);
+            // Parçacık güncelleme
+            for (let i = parcaciklar.length - 1; i >= 0; i--) {
+                parcaciklar[i].x += parcaciklar[i].hizX;
+                parcaciklar[i].y += parcaciklar[i].hizY;
+                parcaciklar[i].omur--;
+                if (parcaciklar[i].omur <= 0) parcaciklar.splice(i, 1);
+            }
+
+            // Yazı güncelleme
+            for (let i = efektYazilari.length - 1; i >= 0; i--) {
+                efektYazilari[i].y -= 1;
+                efektYazilari[i].omur--;
+                if (efektYazilari[i].omur <= 0) efektYazilari.splice(i, 1);
             }
         }
 
         function ciz() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // BEYAZ KAĞIT ARKA PLANI ÜZERİNE GÜNEŞ VE BULUTLAR (`Image (8).jpg` tarzı)
-            // 1. Sarı Güneş
+            // --- DEĞİŞMEYEN ORİJİNAL ARKA PLAN (`Image (8)_2.jpg` Tarzı) ---
+            // 1. Büyük Sarı Güneş
             ctx.fillStyle = "#ffde17";
             ctx.beginPath();
             ctx.arc(100, 90, 45, 0, Math.PI * 2);
             ctx.fill();
-            // Güneş Işınları
             ctx.strokeStyle = "#ffde17";
             ctx.lineWidth = 5;
             for(let a=0; a<Math.PI*2; a+=Math.PI/6) {
@@ -424,9 +343,8 @@
                 ctx.stroke();
             }
 
-            // 2. Mavi Bulutlar
+            // 2. Orijinal Mavi Bulutlar
             ctx.fillStyle = "#29b6f6";
-            // Sağ üst bulut katmanı
             ctx.beginPath();
             ctx.arc(600, 70, 35, 0, Math.PI*2);
             ctx.arc(640, 60, 45, 0, Math.PI*2);
@@ -439,60 +357,41 @@
             ctx.arc(490, 90, 30, 0, Math.PI*2);
             ctx.fill();
 
-
-            // ETRAFTA SÜREKLİ UÇUŞAN ÇİZİM KALPLERİ
+            // Havada Duran Sabit Orijinal Kalpler
             drawHeart(350, 150, 20, "#ff4757");
             drawHeart(780, 240, 15, "#ff4757");
 
-            // EFEKT KALPLERİNİ ÇİZ
-            kalpler.forEach(p => {
-                drawHeart(p.x, p.y, p.boyut / 2, p.renk);
-            });
 
-
-            // --- KARAKTERLERİ ÇİZ (EL ELE TUTUŞAN ÇİFT - `Image (8).jpg` BİREBİR) ---
+            // --- KIZ KARAKTERİN ÇİZİMİ & UÇAN TEKME ANİMASYONU ---
             ctx.save();
-            ctx.translate(cift.x, cift.y);
+            ctx.translate(kiz.x, kiz.y);
 
-            let adimAci = Math.sin(frame * 0.18) * 20;
-
-            // ---- SOLDAKİ KARAKTER (PEMBE FİYONKLU VE DALGALI SAÇLI KIZ) ----
-            let kx = 10;
-            let ky = 30;
-            
-            // Çöp Adam Gövde/Omurga (Pembe Çizgi)
-            ctx.strokeStyle = "#ff6b81";
+            let kx = 0, ky = 30;
+            ctx.strokeStyle = "#ff6b81"; // Çöp adam pembe hat rengi
             ctx.lineWidth = 4;
             ctx.lineCap = "round";
-            ctx.beginPath();
-            ctx.moveTo(kx, ky);
-            ctx.lineTo(kx, ky + 45); // Gövde çizgisi
-            ctx.stroke();
 
-            // Karakterin Kafası
+            // Kafa
             ctx.beginPath();
             ctx.arc(kx, ky - 18, 14, 0, Math.PI * 2);
             ctx.stroke();
 
-            // Gülümseme ve Gözler
+            // Gözler ve Ağız
             ctx.fillStyle = "#ff6b81";
             ctx.beginPath();
             ctx.arc(kx - 5, ky - 20, 2, 0, Math.PI*2);
             ctx.arc(kx + 5, ky - 20, 2, 0, Math.PI*2);
             ctx.fill();
-            // Ağız
             ctx.beginPath();
-            ctx.arc(kx, ky - 16, 5, 0, Math.PI);
+            ctx.arc(kx, ky - 15, 5, 0, Math.PI);
             ctx.stroke();
 
-            // Kahverengi Dalgalı Saçlar (Birebir Çizimdeki Gibi Yanlardan Akan)
+            // Kahverengi Dalgalı Saçlar
             ctx.strokeStyle = "#8d6e63";
             ctx.lineWidth = 4;
             ctx.beginPath();
-            // Sol saç dalgaları
             ctx.moveTo(kx - 10, ky - 25);
             ctx.bezierCurveTo(kx - 25, ky - 15, kx - 15, ky, kx - 22, ky + 25);
-            // Sağ saç dalgaları
             ctx.moveTo(kx + 10, ky - 25);
             ctx.bezierCurveTo(kx + 25, ky - 15, kx + 15, ky, kx + 22, ky + 25);
             ctx.stroke();
@@ -500,261 +399,187 @@
             // Pembe Fiyonk
             ctx.fillStyle = "#ff6b81";
             ctx.beginPath();
-            ctx.moveTo(kx - 12, ky - 28);
-            ctx.lineTo(kx - 22, ky - 34);
-            ctx.lineTo(kx - 22, ky - 22);
-            ctx.closePath();
-            ctx.fill();
+            ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 22, ky - 34); ctx.lineTo(kx - 22, ky - 22); ctx.closePath(); ctx.fill();
             ctx.beginPath();
-            ctx.moveTo(kx - 12, ky - 28);
-            ctx.lineTo(kx - 2, ky - 34);
-            ctx.lineTo(kx - 2, ky - 22);
-            ctx.closePath();
-            ctx.fill();
+            ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 2, ky - 34); ctx.lineTo(kx - 2, ky - 22); ctx.closePath(); ctx.fill();
 
-            // Bacaklar (Yürüme/Koşma Efekti)
+            // Omurga Gövde
             ctx.strokeStyle = "#ff6b81";
             ctx.lineWidth = 4;
-            // Sol Bacak
             ctx.beginPath();
-            ctx.moveTo(kx, ky + 45);
-            if (cift.yerdeMi) {
-                ctx.lineTo(kx - 12 + adimAci/2, ky + 80);
-            } else {
-                ctx.lineTo(kx - 15, ky + 70); // Havada bükülme
-            }
-            ctx.stroke();
-            // Sağ Bacak
-            ctx.beginPath();
-            ctx.moveTo(kx, ky + 45);
-            if (cift.yerdeMi) {
-                ctx.lineTo(kx + 12 - adimAci/2, ky + 80);
-            } else {
-                ctx.lineTo(kx + 5, ky + 78);
-            }
+            ctx.moveTo(kx, ky);
+            ctx.lineTo(kx, ky + 45);
             ctx.stroke();
 
+            // Kollar (Ayrıldıkları için artık serbestler)
+            ctx.beginPath();
+            if (kiz.durum === "tekme" || kiz.durum === "havalaniyor") {
+                // Havada denge kolları
+                ctx.moveTo(kx, ky + 10); ctx.lineTo(kx - 18, ky - 5);
+                ctx.moveTo(kx, ky + 10); ctx.lineTo(kx + 15, ky - 8);
+            } else {
+                // Yürürken normal salınan kollar
+                let kolSalinim = Math.sin(kiz.animFrame * 0.2) * 10;
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx - 15 + kolSalinim, ky + 28);
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 15 - kolSalinim, ky + 28);
+            }
+            ctx.stroke();
 
-            // ---- SAĞDAKİ KARAKTER (SİYAH GÖZLÜKLÜ VE HAVALI SAÇLI ERKEK) ----
-            let ex = 75;
-            let ey = 25;
+            // Bacaklar (Uçan tekme pozu burayı tetikliyor!)
+            ctx.beginPath();
+            if (kiz.durum === "tekme") {
+                // ÖN BACAK TAM İLERİ DOĞRU UZANMIŞ SÜPER UÇAN TEKME POZİSYONU
+                ctx.moveTo(kx, ky + 45);
+                ctx.lineTo(kx + 45, ky + 30); // Tekmeyi basan bacak ileri uzanır
+                
+                // Arka bacak havada bükülü kalır
+                ctx.moveTo(kx, ky + 45);
+                ctx.lineTo(kx - 15, ky + 65);
+            } else if (kiz.durum === "havalaniyor") {
+                // Havaya yükselirken bacakları bükme hareketi
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 8, ky + 70);
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 12, ky + 68);
+            } else {
+                // Yerdeki yürüme adımları
+                let adim = Math.sin(kiz.animFrame * 0.15) * 15;
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 10 + adim, ky + 80);
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 10 - adim, ky + 80);
+            }
+            ctx.stroke();
 
+            ctx.restore();
+
+
+            // --- ERKEK KARAKTERİN ÇİZİMİ (Gözlükler ve Saç Korumalı) ---
+            ctx.save();
+            ctx.translate(erkek.x + erkek.sarsilmaX, erkek.y);
+
+            let ex = 0, ey = 30;
             ctx.strokeStyle = "#ff6b81";
-            // Gövde
-            ctx.beginPath();
-            ctx.moveTo(ex, ey);
-            ctx.lineTo(ex, ey + 50);
-            ctx.stroke();
+            ctx.lineWidth = 4;
 
             // Kafa
             ctx.beginPath();
             ctx.arc(ex, ey - 18, 15, 0, Math.PI * 2);
             ctx.stroke();
 
-            // Siyah Havalı Saçlar ("boy" yazısına benzeyen karalamalı yapı)
+            // SAÇI KORUNDU ("boyom" yazılı orijinal karalama yapısı)
             ctx.fillStyle = "#000000";
             ctx.font = "bold 13px 'Arial'";
             ctx.fillText("boyom", ex - 18, ey - 36);
             ctx.fillRect(ex - 15, ey - 34, 30, 6);
 
-            // Büyük Siyah Güneş Gözlüğü
+            // GÜNEŞ GÖZLÜKLERİ KORUNDU (Büyük havalı siyah camlar)
             ctx.fillStyle = "#000000";
             ctx.fillRect(ex - 14, ey - 24, 28, 10);
             ctx.strokeStyle = "#000000";
             ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(ex - 14, ey - 20);
-            ctx.lineTo(ex - 18, ey - 18);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ex - 14, ey - 20); ctx.lineTo(ex - 18, ey - 18); ctx.stroke();
 
-            // Pembe Gülüş
+            // Ağız (Darbe aldığında şaşkınlık yuvarlağına dönüşür, normalken gülümser)
             ctx.strokeStyle = "#ff6b81";
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(ex, ey - 12, 4, 0, Math.PI);
+            if (erkek.durum === "darbeAldi") {
+                ctx.arc(ex, ey - 11, 4, 0, Math.PI * 2); // "O" şeklinde şaşırmış ağız
+            } else {
+                ctx.arc(ex, ey - 12, 5, 0, Math.PI); // Mutlu gülüş
+            }
             ctx.stroke();
 
-            // Bacaklar
-            // Sol Bacak
-            ctx.beginPath();
-            ctx.moveTo(ex, ey + 50);
-            ctx.lineTo(ex - 12 - adimAci/2, ey + 85);
-            ctx.stroke();
-            // Sağ Bacak
-            ctx.beginPath();
-            ctx.moveTo(ex, ey + 50);
-            ctx.lineTo(ex + 12 + adimAci/2, ey + 85);
-            ctx.stroke();
-
-
-            // ---- EL ELE TUTUŞMA VE HAVADAKİ BALON KOLLAR ----
-            ctx.strokeStyle = "#ff6b81";
+            // Gövde
             ctx.lineWidth = 4;
-            
-            // Sol Kol (Kızın Dış Kolu)
+            ctx.strokeStyle = "#ff6b81";
+            ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex, ey + 50); ctx.stroke();
+
+            // Kollar (Çizimdeki gibi yanlardaki pembe balonumsu efektlerle süslü)
             ctx.beginPath();
-            ctx.moveTo(kx, ky + 12);
-            ctx.lineTo(kx - 18, ky + 28);
+            if (erkek.durum === "darbeAldi") {
+                // Darbe yiyince kollar havaya fırlar
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 22, ey - 5);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 22, ey - 5);
+            } else {
+                // Normal duruş kolları
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 20, ey + 28);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 20, ey + 28);
+            }
             ctx.stroke();
 
-            // Birleşen İki İç Kol (El ele tutuşma bölgesi)
-            ctx.beginPath();
-            ctx.moveTo(kx, ky + 12);
-            ctx.lineTo((kx + ex)/2, (ky + ey)/2 + 15);
-            ctx.lineTo(ex, ey + 12);
-            ctx.stroke();
-
-            // Çizimdeki O Yuvarlak Pembe Balon/Kalp Detayları (Kolların üstündeki kısımlar)
+            // Koldaki Orijinal Yuvarlak Pembe Balon Yapıları
             ctx.fillStyle = "rgba(255, 107, 129, 0.6)";
             ctx.beginPath();
-            ctx.arc((kx + ex)/2, (ky + ey)/2 + 15, 12, 0, Math.PI*2); // Ortadaki yuvarlak pembe alan
-            ctx.arc(ex + 15, ey + 20, 10, 0, Math.PI*2); // Erkeğin sağındaki yuvarlak
+            ctx.arc(ex - 15, ey + 20, 10, 0, Math.PI*2);
+            ctx.arc(ex + 15, ey + 20, 10, 0, Math.PI*2);
             ctx.fill();
 
-            // Erkeğin Sağ Dış Kolu
+            // Bacaklar
             ctx.beginPath();
-            ctx.moveTo(ex, ey + 12);
-            ctx.lineTo(ex + 22, ey + 30);
-            ctx.stroke();
-
-            // SÜPER UÇAN TEKME AURASI (Aktifken etraflarında büyük kırmızı bir kalp aurası döner)
-            if (cift.tekmeAtiyorMu) {
-                ctx.strokeStyle = "rgba(255, 71, 87, 0.4)";
-                ctx.lineWidth = 6;
-                ctx.strokeRect(-20, -40, 150, 150);
+            if (erkek.durum === "darbeAldi") {
+                // Sendelerken bacaklar açılır
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 20, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 10, ey + 85);
+            } else {
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 12, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 12, ey + 85);
             }
+            ctx.stroke();
 
             ctx.restore();
 
 
-            // --- YEŞİL ÇİMENLİ TEPELER (ZEMİN - `Image (8).jpg` Tarzı Tepecikler) ---
-            ctx.fillStyle = "#4caf50";
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height);
-            // Ekranda akıp giden dinamik tepecikler dizisi
-            for (let i = 0; i <= canvas.width + 300; i += 150) {
-                let xPos = zmask = zeminX + i;
-                ctx.lineTo(xPos, 400);
-                ctx.bezierCurveTo(xPos + 50, 360, xPos + 100, 360, xPos + 150, 400);
-            }
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.fill();
-            
-            // Koyu Yeşil Çizgiler (Çizim hatlarını korumak için)
-            ctx.strokeStyle = "#2e7d32";
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            for (let i = 0; i <= canvas.width + 300; i += 150) {
-                let xPos = zeminX + i;
-                ctx.moveTo(xPos, 400);
-                ctx.bezierCurveTo(xPos + 50, 360, xPos + 100, 360, xPos + 150, 400);
-            }
-            ctx.stroke();
-
-
-            // --- DÜŞMANLAR (Siber Robot Böcekler) ---
-            dusmanlar.forEach(d => {
-                ctx.save();
-                ctx.translate(d.x, d.y);
-                ctx.strokeStyle = "#1a0933";
-                ctx.lineWidth = 3;
-
-                if (d.tip === "yer") {
-                    // Yerdeki küçük engel çöp canavarı
-                    ctx.fillStyle = "#312e81";
-                    ctx.fillRect(0, 0, d.genislik, d.yukseklik);
-                    ctx.strokeRect(0, 0, d.genislik, d.yukseklik);
-                    // Kırmızı göz
-                    ctx.fillStyle = "#ff4757";
-                    ctx.fillRect(5, 8, 8, 8);
-                } else {
-                    // Havada uçan sinir bozucu engel
-                    ctx.fillStyle = "#4338ca";
-                    ctx.beginPath();
-                    ctx.arc(d.genislik/2, d.yukseklik/2, d.genislik/2, 0, Math.PI*2);
-                    ctx.fill();
-                    ctx.stroke();
-                    // Kanatlar
-                    ctx.fillStyle = "#6366f1";
-                    ctx.fillRect(5, -5, 8, 10);
-                }
-                ctx.restore();
+            // --- DARBE PARÇACIKLARI (Kırık Kalpler Saçılır) ---
+            parcaciklar.forEach(p => {
+                drawHeart(p.x, p.y, p.boyut / 2, "#ff4757", true); // Kırık kalp çizimi true gönderildi
             });
 
-
-            // REAKSİYON YAZILARI
-            yazilar.forEach(y => {
-                ctx.fillStyle = y.renk;
-                ctx.font = "bold 22px 'Caveat', cursive";
+            // REAKSİYON METİNLERİ
+            efektYazilari.forEach(y => {
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "bold 26px 'Caveat', cursive";
                 ctx.fillText(y.metin, y.x, y.y);
             });
 
 
-            // PREMİUM HUD ARAYÜZÜ (Çizim temasına uygun pembe tonlu skor tabelası)
+            // --- YEŞİL ÇİMENLİ TEPELER (Orijinal Zemin Çizgileri) ---
+            ctx.fillStyle = "#4caf50";
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.lineTo(i, 400);
+                ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.fill();
+            
+            ctx.strokeStyle = "#2e7d32";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.moveTo(i, 400);
+                ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.stroke();
+
+
+            // SKOR TABELASI (Tekme Sayacı)
             ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-            ctx.lineWidth = 2;
             ctx.strokeStyle = "#ff4757";
-            ctx.fillRect(20, 20, 180, 45);
-            ctx.strokeRect(20, 20, 180, 45);
-            ctx.fillRect(canvas.width - 200, 20, 180, 45);
-            ctx.strokeRect(canvas.width - 200, 20, 180, 45);
+            ctx.lineWidth = 2;
+            ctx.fillRect(20, 20, 220, 45);
+            ctx.strokeRect(20, 20, 220, 45);
 
             ctx.fillStyle = "#1e1b4b";
-            ctx.font = "bold 18px 'Inter', sans-serif";
-            ctx.fillText(`SKOR: ${skor}`, 45, 48);
-
-            let canKalpler = "";
-            for (let c = 0; c < can; c++) canKalpler += "❤️";
-            ctx.fillText(`CAN: ${canKalpler}`, canvas.width - 175, 48);
-
-
-            // OYUN BİTTİ EKRANI
-            if (oyunBitti) {
-                ctx.fillStyle = "rgba(9, 5, 20, 0.92)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = "#ff4757";
-                ctx.font = "bold 44px 'Caveat', cursive";
-                ctx.textAlign = "center";
-                ctx.fillText("Yolculuk Yarım Kaldı! ❤️", canvas.width / 2, canvas.height / 2 - 30);
-
-                ctx.fillStyle = "#94a3b8";
-                ctx.font = "18px 'Inter', sans-serif";
-                ctx.fillText(`Topladığınız Sevgi Skoru: ${skor}`, canvas.width / 2, canvas.height / 2 + 15);
-
-                ctx.fillStyle = "#2ed573";
-                ctx.font = "bold 20px 'Inter', sans-serif";
-                ctx.fillText("Beraber Yeniden Başlamak İçin Ekrana Tıkla veya Space'e Bas", canvas.width / 2, canvas.height / 2 + 70);
-                ctx.textAlign = "start";
-            }
-        }
-
-        function yenidenBaslat() {
-            skor = 0;
-            can = 3;
-            dusmanlar = [];
-            kalpler = [];
-            yazilar = [];
-            oyunHizi = 5.5;
-            oyunBitti = false;
-            cift.y = 300;
-            cift.x = 120;
-            cift.hizY = 0;
-            cift.yerdeMi = true;
-            cift.tekmeAtiyorMu = false;
-            döngü();
+            ctx.font = "bold 16px 'Inter', sans-serif";
+            ctx.fillText(`YENEN TEKME: ${tekmeSayisi} 💢`, 40, 48);
         }
 
         function döngü() {
             guncelle();
             ciz();
-            if (!oyunBitti) {
-                requestAnimationFrame(döngü);
-            }
+            requestAnimationFrame(döngü);
         }
 
         döngü();
     </script>
-
 </body>
 </html>
