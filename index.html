@@ -4,15 +4,14 @@
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ucan Tekme</title>
+    <title>Ucan Tekme - Oyun Modu</title>
     
-    <!-- Modern ve Profesyonel Yazı Tipi (Inter) -->
+    <!-- Modern ve Profesyonel Yazı Tipi -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Genel Reset ve Premium Arka Plan */
         body { 
             background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
             color: #f8fafc; 
@@ -20,49 +19,54 @@
             font-family: 'Inter', sans-serif; 
             min-height: 100vh;
             margin: 0;
-            padding: 80px 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
+            overflow-x: hidden;
         }
 
-        /* Tipografi ve Başlık Alanı */
         h1 { 
-            font-size: 3.5rem; 
+            font-size: 3rem; 
             font-weight: 700;
             letter-spacing: -0.05em;
             background: linear-gradient(to right, #ff4757, #ff6b81);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         
         .subtitle {
             color: #94a3b8;
-            font-size: 1.1rem;
-            margin-bottom: 48px;
+            font-size: 1rem;
+            margin-bottom: 25px;
             font-weight: 300;
         }
 
-        /* Ana Görsel Konteyneri */
-        .gorsel-container {
+        /* OYUN ALANI (CANVAS) */
+        .oyun-konteyner {
             max-width: 800px;
             margin: 0 auto;
             position: relative;
         }
-        
-        .site-gorseli {
-            width: 100%; 
-            height: auto; 
+
+        canvas {
+            background: #1e293b;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 71, 87, 0.3);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .site-gorseli:hover {
-            transform: scale(1.01) translateY(-4px);
+            display: block;
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            cursor: pointer;
         }
 
-        /* Sağdaki Sabit Cam Efektli Buton */
+        .kontrol-notu {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        /* SAĞDAKİ SABİT KEDİSLER BUTONU */
         .kedi-butonu {
             position: fixed;
             right: 32px;
@@ -90,10 +94,9 @@
             background: rgba(255, 71, 87, 0.9);
             color: white;
             transform: translateY(-50%) scale(1.05);
-            box-shadow: 0 20px 40px -10px rgba(255, 71, 87, 0.5);
         }
 
-        /* Modern Modal (Açılır Pencere) Cam Efekti */
+        /* MODAL (KEDİ FOTOĞRAFLARI PENCERESİ) */
         .modal {
             display: none; 
             position: fixed;
@@ -116,7 +119,6 @@
             opacity: 1;
         }
 
-        /* Kübik Modern Kart Tasarımı */
         .modal-icerik {
             background: #1e293b;
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -141,12 +143,9 @@
             font-size: 24px;
             color: #64748b;
             cursor: pointer;
-            transition: color 0.2s;
         }
         
-        .kapat-butonu:hover {
-            color: #f1f5f9;
-        }
+        .kapat-butonu:hover { color: #f1f5f9; }
 
         .kedi-foto {
             width: 100%;
@@ -154,10 +153,8 @@
             object-fit: cover;
             border-radius: 16px;
             margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* İnteraktif Aksiyon Butonu */
         .degistir-butonu {
             background: #2ed573;
             color: white;
@@ -168,84 +165,317 @@
             cursor: pointer;
             font-weight: 600;
             width: 100%;
-            box-shadow: 0 10px 20px -10px rgba(46, 213, 115, 0.4);
             transition: all 0.2s ease;
         }
         
-        .degistir-butonu:hover {
-            background: #26af5f;
-            box-shadow: 0 15px 25px -10px rgba(46, 213, 115, 0.5);
-            transform: translateY(-1px);
-        }
+        .degistir-butonu:hover { background: #26af5f; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <!-- Başlık Bölümü -->
     <h1>Armut Atis ❤️</h1>
-    <div class="subtitle">Ucan Tekme Projesine Hoş Geldiniz</div>
+    <div class="subtitle">Zıplamak ve Uçan Tekme Atmak İçin BOŞLUK (SPACE) Tuşuna Bas veya Ekrana Tıkla!</div>
 
-    <!-- Görsel Alanı -->
-    <div class="gorsel-container">
-        <img src="resim.jpg" alt="Sitemizin Görseli" class="site-gorseli">
+    <!-- OYUN ALANI -->
+    <div class="oyun-konteyner">
+        <canvas id="oyunTuvali" width="800" height="400"></canvas>
     </div>
+    <div class="kontrol-notu">Köpeklere uçan tekme atarak onları etkisiz hale getir! Yerdeyken çarparsan canın gider.</div>
 
-    <!-- Sağdaki Sabit Buton -->
+    <!-- SAĞDAKİ BUTON -->
     <button class="kedi-butonu" onclick="modaliAc()">
         <span>🐱</span> Kedisler
     </button>
 
-    <!-- Modal Alanı -->
+    <!-- KEDİ FOTOĞRAFLARI MODAL ALANI -->
     <div id="kediPencerem" class="modal" onclick="pencereDisiKapat(event)">
         <div class="modal-icerik">
             <span class="kapat-butonu" onclick="modaliKapat()">&times;</span>
             <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600;">Günün Kedisi! 🐾</h2>
-            
             <img id="kediResmi" src="Image (9).jpg" alt="Kedi" class="kedi-foto">
-            
             <button class="degistir-butonu" onclick="kediDegistir()">Başka Kedi Göster 🔄</button>
         </div>
     </div>
 
-    <!-- JavaScript Düzenlemeleri (Yumuşak Açılış Animasyonu İçin) -->
+    <!-- SİHİRLİ OYUN VE GALERİ MOTORU -->
     <script>
+        // --- 1. GALERİ KODLARI ---
         const kediListesi = [
-            "Image (9).jpg",
-            "Image (10).jpg",
-            "Image (11).jpg",
-            "Image (12).jpg",
-            "Image (13).jpg",
-            "Image (14).jpg",
-            "Image (15).jpg"
+            "Image (9).jpg", "Image (10).jpg", "Image (11).jpg", 
+            "Image (12).jpg", "Image (13).jpg", "Image (14).jpg", "Image (15).jpg"
         ];
-        
         let sira = 0;
         const modal = document.getElementById("kediPencerem");
 
         function modaliAc() {
             modal.style.display = "flex";
-            setTimeout(() => {
-                modal.classList.add("aktif");
-            }, 10);
+            setTimeout(() => modal.classList.add("aktif"), 10);
         }
-
         function modaliKapat() {
             modal.classList.remove("aktif");
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300);
+            setTimeout(() => modal.style.display = "none", 300);
         }
-
         function kediDegistir() {
             sira = (sira + 1) % kediListesi.length;
             document.getElementById("kediResmi").src = kediListesi[sira];
         }
-
         function pencereDisiKapat(event) {
-            if (event.target === modal) {
-                modaliKapat();
+            if (event.target === modal) modaliKapat();
+        }
+
+        // --- 2. UÇAN TEKME OYUN MOTORU ---
+        const canvas = document.getElementById("oyunTuvali");
+        const ctx = canvas.getContext("2d");
+
+        // Oyun Değişkenleri
+        let skor = 0;
+        let can = 3;
+        let oyunBitti = false;
+
+        // Kedi (Oyuncu) Nesnesi
+        const kedi = {
+            x: 100,
+            y: 300,
+            width: 50,
+            height: 50,
+            yercekimi: 0.6,
+            hizY: 0,
+            ziplamaGucu: -15,
+            yerdeMi: true,
+            tekmeAtiyorMu: false,
+            tekmeSuresi: 0
+        };
+
+        // Düşmanlar Dizisi
+        let dusmanlar = [];
+        let dusmanHizi = 5;
+        let dusmanYaratmaZamani = 0;
+
+        // Kontroller
+        function tetikleZiplamaVeyaTekme() {
+            if (oyunBitti) {
+                yenidenBaslat();
+                return;
+            }
+            if (kedi.yerdeMi) {
+                kedi.hizY = kedi.ziplamaGucu;
+                kedi.yerdeMi = false;
+                kedi.tekmeAtiyorMu = true; // Havaya kalktığı an uçan tekme moduna girer!
             }
         }
+
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                e.preventDefault();
+                tetikleZiplamaVeyaTekme();
+            }
+        });
+        canvas.addEventListener("click", tetikleZiplamaVeyaTekme);
+
+        function dusmanUret() {
+            if (dusmanYaratmaZamani <= 0) {
+                dusmanlar.push({
+                    x: canvas.width,
+                    y: 310,
+                    width: 40,
+                    height: 40,
+                    renk: "#ffa502" // Düşman köpek rengi
+                });
+                dusmanYaratmaZamani = Math.random() * 100 + 80; // Rastgele aralıklarla üret
+            }
+            dusmanYaratmaZamani--;
+        }
+
+        function yenidenBaslat() {
+            skor = 0;
+            can = 3;
+            dusmanlar = [];
+            dusmanHizi = 5;
+            oyunBitti = false;
+            kedi.y = 300;
+            kedi.hizY = 0;
+            kedi.yerdeMi = true;
+            kedi.tekmeAtiyorMu = false;
+            döngü();
+        }
+
+        function guncelle() {
+            if (oyunBitti) return;
+
+            // Fizik ve Yerçekimi
+            kedi.hizY += kedi.yercekimi;
+            kedi.y += kedi.hizY;
+
+            // Yere basma kontrolü
+            if (kedi.y >= 300) {
+                kedi.y = 300;
+                kedi.hizY = 0;
+                kedi.yerdeMi = true;
+                kedi.tekmeAtiyorMu = false; // Yere inince tekme biter
+            }
+
+            dusmanUret();
+
+            // Düşman hareketleri ve Çarpışma Testi
+            for (let i = dusmanlar.length - 1; i >= 0; i--) {
+                dusmanlar[i].x -= dusmanHizi;
+
+                // Çarpışma algılama alanı
+                if (kedi.x < dusmanlar[i].x + dusmanlar[i].width &&
+                    kedi.x + kedi.width + (kedi.tekmeAtiyorMu ? 20 : 0) > dusmanlar[i].x &&
+                    kedi.y < dusmanlar[i].y + dusmanlar[i].height &&
+                    kedi.y + kedi.height > dusmanlar[i].y) {
+                    
+                    if (kedi.tekmeAtiyorMu && !kedi.yerdeMi) {
+                        // Havada çarptıysa UÇAN TEKME ATMIŞTIR! Düşman uçar gider.
+                        dusmanlar.splice(i, 1);
+                        skor += 10;
+                        dusmanHizi += 0.2; // Oyun gitgide hızlanır
+                    } else {
+                        // Yerde çarptıysa darbe alır!
+                        dusmanlar.splice(i, 1);
+                        can--;
+                        if (can <= 0) {
+                            oyunBitti = true;
+                        }
+                    }
+                } else if (dusmanlar[i].x + dusmanlar[i].width < 0) {
+                    // Ekrandan çıkan düşmanlar silinir ve düz puan gelir
+                    dusmanlar.splice(i, 1);
+                    skor += 5;
+                }
+            }
+        }
+
+        function ciz() {
+            // Arka planı temizle
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Arka plan çizgisi (Yer/Zemin)
+            ctx.strokeStyle = "rgba(255,255,255,0.1)";
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(0, 350);
+            ctx.lineTo(canvas.width, 350);
+            ctx.stroke();
+
+            // 1. KEDİYİ ÇİZ (Sarı/Turuncu Tatlı Savaşçı Kedi)
+            ctx.save();
+            ctx.translate(kedi.x, kedi.y);
+
+            // Kedi Gövdesi
+            ctx.fillStyle = "#ffb142";
+            ctx.beginPath();
+            ctx.ellipse(25, 25, 20, 15, kedi.tekmeAtiyorMu ? Math.PI/4 : 0, 0, Math.PI*2);
+            ctx.fill();
+
+            // Kedi Kafası
+            ctx.fillStyle = "#ffa502";
+            ctx.beginPath();
+            ctx.arc(kedi.tekmeAtiyorMu ? 40 : 35, 12, 12, 0, Math.PI*2);
+            ctx.fill();
+
+            // Kulaklar
+            ctx.fillStyle = "#ffa502";
+            ctx.beginPath(); // Sol Kulak
+            ctx.moveTo(kedi.tekmeAtiyorMu ? 35 : 28, 2);
+            ctx.lineTo(kedi.tekmeAtiyorMu ? 40 : 33, -6);
+            ctx.lineTo(kedi.tekmeAtiyorMu ? 43 : 38, 4);
+            ctx.fill();
+
+            // Gözler
+            ctx.fillStyle = "#1e293b";
+            ctx.beginPath();
+            ctx.arc(kedi.tekmeAtiyorMu ? 44 : 39, 10, 2, 0, Math.PI*2);
+            ctx.fill();
+
+            // UÇAN TEKME BACAĞI VE EFEKTİ
+            if (kedi.tekmeAtiyorMu) {
+                // İleri fırlayan tekme ayağı
+                ctx.strokeStyle = "#ff4757";
+                ctx.lineWidth = 6;
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.moveTo(30, 30);
+                ctx.lineTo(55, 35);
+                ctx.stroke();
+
+                // Tekme rüzgarı efekti (Aura)
+                ctx.strokeStyle = "rgba(255, 71, 87, 0.4)";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(60, 35, 8, 0, Math.PI*2);
+                ctx.stroke();
+            } else {
+                // Normal bacaklar
+                ctx.fillStyle = "#ffa502";
+                ctx.fillRect(10, 35, 6, 12);
+                ctx.fillRect(30, 35, 6, 12);
+            }
+
+            ctx.restore();
+
+            // 2. DÜŞMANLARI ÇİZ (Köpekçikler)
+            dusmanlar.forEach(dusman => {
+                ctx.fillStyle = "#ced6e0";
+                ctx.beginPath();
+                ctx.arc(dusman.x + 20, dusman.y + 20, 18, 0, Math.PI*2);
+                ctx.fill();
+                // Kulaklar
+                ctx.fillStyle = "#a4b0be";
+                ctx.fillRect(dusman.x + 5, dusman.y + 5, 8, 15);
+                // Göz
+                ctx.fillStyle = "#2f3542";
+                ctx.beginPath();
+                ctx.arc(dusman.x + 14, dusman.y + 16, 2.5, 0, Math.PI*2);
+                ctx.fill();
+                // Burun
+                ctx.fillStyle = "#ff4757";
+                ctx.beginPath();
+                ctx.arc(dusman.x + 6, dusman.y + 22, 3, 0, Math.PI*2);
+                ctx.fill();
+            });
+
+            // 3. ARAYÜZ BİLGİLERİ (Skor ve Can)
+            ctx.fillStyle = "#f8fafc";
+            ctx.font = "bold 18px 'Inter', sans-serif";
+            ctx.fillText(`Skor: ${skor}`, 30, 40);
+            
+            // Can Kalpleri
+            let kalpler = "";
+            for(let c=0; c<can; c++) kalpler += "❤️";
+            ctx.fillText(`Can: ${kalpler}`, canvas.width - 150, 40);
+
+            // Oyun Bitti Ekranı
+            if (oyunBitti) {
+                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "bold 40px 'Inter', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("OYUN BİTTİ 💥", canvas.width / 2, canvas.height / 2 - 20);
+
+                ctx.fillStyle = "#f8fafc";
+                ctx.font = "20px 'Inter', sans-serif";
+                ctx.fillText(`Toplam Skorun: ${skor}`, canvas.width / 2, canvas.height / 2 + 20);
+                
+                ctx.fillStyle = "#2ed573";
+                ctx.fillText("Yeniden Başlamak İçin Tıkla veya Boşluğa Bas", canvas.width / 2, canvas.height / 2 + 70);
+                ctx.textAlign = "start"; // Hizalamayı düzelt
+            }
+        }
+
+        function döngü() {
+            guncelle();
+            ciz();
+            if (!oyunBitti) {
+                requestAnimationFrame(döngü);
+            }
+        }
+
+        // Oyunu ilk kez tetikle
+        döngü();
     </script>
 
 </body>
