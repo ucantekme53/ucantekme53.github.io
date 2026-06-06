@@ -4,66 +4,76 @@
     <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ucan Tekme - Oyun Modu</title>
+    <title>Ucan Tekme - Advanced Arcade</title>
     
-    <!-- Modern ve Profesyonel Yazı Tipi -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
         body { 
-            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+            background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
             color: #f8fafc; 
             text-align: center; 
             font-family: 'Inter', sans-serif; 
             min-height: 100vh;
             margin: 0;
-            padding: 40px 20px;
+            padding: 30px 20px;
             box-sizing: border-box;
             overflow-x: hidden;
         }
 
         h1 { 
-            font-size: 3rem; 
-            font-weight: 700;
+            font-size: 3.5rem; 
+            font-weight: 800;
             letter-spacing: -0.05em;
-            background: linear-gradient(to right, #ff4757, #ff6b81);
+            background: linear-gradient(to right, #ff4757, #ff6b81, #ff7f50);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 4px;
+            margin-top: 10px;
         }
         
         .subtitle {
             color: #94a3b8;
-            font-size: 1rem;
-            margin-bottom: 25px;
-            font-weight: 300;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-weight: 400;
         }
 
-        /* OYUN ALANI (CANVAS) */
+        .hud-instructions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+
+        .hud-instructions span {
+            color: #ff4757;
+            font-weight: 600;
+        }
+
+        /* OYUN ALANI */
         .oyun-konteyner {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             position: relative;
         }
 
         canvas {
-            background: #1e293b;
-            border-radius: 20px;
-            border: 2px solid rgba(255, 71, 87, 0.3);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            background: #0b1329;
+            border-radius: 24px;
+            border: 3px solid rgba(255, 71, 87, 0.4);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.9), 0 0 50px -10px rgba(255, 71, 87, 0.15);
             display: block;
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             height: auto;
             cursor: pointer;
-        }
-
-        .kontrol-notu {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 15px;
         }
 
         /* SAĞDAKİ SABİT KEDİSLER BUTONU */
@@ -72,17 +82,17 @@
             right: 32px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 71, 87, 0.2);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 71, 87, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             color: #ff4757;
             border: 1px solid rgba(255, 71, 87, 0.3);
             padding: 16px 24px;
             font-size: 0.95rem;
             font-weight: 600;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 10px 30px -10px rgba(255, 71, 87, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(255, 71, 87, 0.2);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1000;
             display: flex;
@@ -94,9 +104,10 @@
             background: rgba(255, 71, 87, 0.9);
             color: white;
             transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 20px 40px -10px rgba(255, 71, 87, 0.4);
         }
 
-        /* MODAL (KEDİ FOTOĞRAFLARI PENCERESİ) */
+        /* MODAL */
         .modal {
             display: none; 
             position: fixed;
@@ -104,9 +115,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -121,85 +132,52 @@
 
         .modal-icerik {
             background: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 32px;
-            border-radius: 24px;
+            border-radius: 28px;
             max-width: 480px;
             width: 90%;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
             transform: scale(0.9);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .modal.aktif .modal-icerik {
-            transform: scale(1);
-        }
-
-        .kapat-butonu {
-            position: absolute;
-            top: 20px;
-            right: 24px;
-            font-size: 24px;
-            color: #64748b;
-            cursor: pointer;
-        }
-        
+        .modal.aktif .modal-icerik { transform: scale(1); }
+        .kapat-butonu { position: absolute; top: 20px; right: 24px; font-size: 26px; color: #64748b; cursor: pointer; }
         .kapat-butonu:hover { color: #f1f5f9; }
-
-        .kedi-foto {
-            width: 100%;
-            height: 320px;
-            object-fit: cover;
-            border-radius: 16px;
-            margin: 20px 0;
-        }
-
-        .degistir-butonu {
-            background: #2ed573;
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            font-size: 1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.2s ease;
-        }
-        
+        .kedi-foto { width: 100%; height: 320px; object-fit: cover; border-radius: 20px; margin: 20px 0; }
+        .degistir-butonu { background: #2ed573; color: white; border: none; padding: 14px 24px; font-size: 1rem; border-radius: 14px; cursor: pointer; font-weight: 600; width: 100%; transition: all 0.2s ease; }
         .degistir-butonu:hover { background: #26af5f; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
     <h1>Armut Atis ❤️</h1>
-    <div class="subtitle">Zıplamak ve Uçan Tekme Atmak İçin BOŞLUK (SPACE) Tuşuna Bas veya Ekrana Tıkla!</div>
-
-    <!-- OYUN ALANI -->
-    <div class="oyun-konteyner">
-        <canvas id="oyunTuvali" width="800" height="400"></canvas>
+    <div class="subtitle">Ucan Tekme Savaşçısı Kedinin Macerası</div>
+    <div class="hud-instructions">
+        Yerdeyken <span>SPACE (Boşluk)</span>: Zıplar | Havada tekrar <span>SPACE</span>: 💥 <span>UÇAN TEKME ATAR!</span>
     </div>
-    <div class="kontrol-notu">Köpeklere uçan tekme atarak onları etkisiz hale getir! Yerdeyken çarparsan canın gider.</div>
 
-    <!-- SAĞDAKİ BUTON -->
+    <div class="oyun-konteyner">
+        <canvas id="oyunTuvali" width="900" height="450"></canvas>
+    </div>
+
     <button class="kedi-butonu" onclick="modaliAc()">
         <span>🐱</span> Kedisler
     </button>
 
-    <!-- KEDİ FOTOĞRAFLARI MODAL ALANI -->
     <div id="kediPencerem" class="modal" onclick="pencereDisiKapat(event)">
         <div class="modal-icerik">
             <span class="kapat-butonu" onclick="modaliKapat()">&times;</span>
-            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600;">Günün Kedisi! 🐾</h2>
+            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 600; color: #ff4757;">Günün Kedisi! 🐾</h2>
             <img id="kediResmi" src="Image (9).jpg" alt="Kedi" class="kedi-foto">
             <button class="degistir-butonu" onclick="kediDegistir()">Başka Kedi Göster 🔄</button>
         </div>
     </div>
 
-    <!-- SİHİRLİ OYUN VE GALERİ MOTORU -->
     <script>
-        // --- 1. GALERİ KODLARI ---
+        // --- 1. GALERİ MOTORU ---
         const kediListesi = [
             "Image (9).jpg", "Image (10).jpg", "Image (11).jpg", 
             "Image (12).jpg", "Image (13).jpg", "Image (14).jpg", "Image (15).jpg"
@@ -219,251 +197,464 @@
             sira = (sira + 1) % kediListesi.length;
             document.getElementById("kediResmi").src = kediListesi[sira];
         }
-        function pencereDisiKapat(event) {
-            if (event.target === modal) modaliKapat();
-        }
+        function pencereDisiKapat(event) { if (event.target === modal) modaliKapat(); }
 
-        // --- 2. UÇAN TEKME OYUN MOTORU ---
+
+        // --- 2. GELİŞMİŞ UÇAN TEKME OYUN MOTORU ---
         const canvas = document.getElementById("oyunTuvali");
         const ctx = canvas.getContext("2d");
 
-        // Oyun Değişkenleri
         let skor = 0;
         let can = 3;
         let oyunBitti = false;
+        let oyunHizi = 6;
+        let frame = 0;
 
-        // Kedi (Oyuncu) Nesnesi
+        // Efektler ve Objeler Listesi
+        let partikuller = [];
+        let dusmanlar = [];
+        let yazilar = []; // Ekranda beliren "POW!", "KICK!" yazıları
+
+        // Katmanlı Arka Plan (Parallaks Şehir)
+        let arkaPlanX1 = 0;
+        let arkaPlanX2 = 0;
+
+        // Gelişmiş Oyuncu (Ninja Kedi) Tasarımı
         const kedi = {
-            x: 100,
-            y: 300,
-            width: 50,
-            height: 50,
-            yercekimi: 0.6,
+            x: 120,
+            y: 320,
+            genislik: 60,
+            yukseklik: 60,
+            yercekimi: 0.7,
             hizY: 0,
-            ziplamaGucu: -15,
+            hizX: 0,
+            ziplamaGucu: -14,
             yerdeMi: true,
             tekmeAtiyorMu: false,
-            tekmeSuresi: 0
+            tekmeFrame: 0,
+            ziplamaSayisi: 0,
+            tozZamani: 0
         };
 
-        // Düşmanlar Dizisi
-        let dusmanlar = [];
-        let dusmanHizi = 5;
-        let dusmanYaratmaZamani = 0;
-
-        // Kontroller
-        function tetikleZiplamaVeyaTekme() {
+        // Girdi Kontrolleri
+        function eylemTetikle() {
             if (oyunBitti) {
                 yenidenBaslat();
                 return;
             }
+
             if (kedi.yerdeMi) {
                 kedi.hizY = kedi.ziplamaGucu;
                 kedi.yerdeMi = false;
-                kedi.tekmeAtiyorMu = true; // Havaya kalktığı an uçan tekme moduna girer!
+                kedi.ziplamaSayisi = 1;
+                yaratToz(kedi.x + 15, 370, "#cbd5e1", 8);
+            } else if (kedi.ziplamaSayisi === 1) {
+                // Havada ikinci kez basılırsa: SÜPER UÇAN TEKME!
+                kedi.tekmeAtiyorMu = true;
+                kedi.tekmeFrame = 18; // 18 kare sürecek ileri atılma efekti
+                kedi.hizY = -3;       // Havada hafif asılı kalma hissi
+                kedi.hizX = 12;       // İleriye doğru ani fırlama (Dash)
+                kedi.ziplamaSayisi = 2;
+                
+                yazilar.push({
+                    x: kedi.x + 40,
+                    y: kedi.y - 15,
+                    metin: "FLYING KICK! 💥",
+                    omur: 25,
+                    renk: "#ff4757"
+                });
             }
         }
 
         window.addEventListener("keydown", (e) => {
             if (e.code === "Space") {
                 e.preventDefault();
-                tetikleZiplamaVeyaTekme();
+                eylemTetikle();
             }
         });
-        canvas.addEventListener("click", tetikleZiplamaVeyaTekme);
+        canvas.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            eylemTetikle();
+        });
 
-        function dusmanUret() {
-            if (dusmanYaratmaZamani <= 0) {
-                dusmanlar.push({
-                    x: canvas.width,
-                    y: 310,
-                    width: 40,
-                    height: 40,
-                    renk: "#ffa502" // Düşman köpek rengi
+        // Parçacık Üreticileri (Kıvılcım ve Toz Efektleri)
+        function yaratToz(x, y, renk, adet) {
+            for (let i = 0; i < adet; i++) {
+                partikuller.push({
+                    x: x,
+                    y: y,
+                    hizX: (Math.random() - 0.5) * 4 - 2,
+                    hizY: (Math.random() - 0.5) * 3,
+                    boyut: Math.random() * 4 + 2,
+                    omur: Math.random() * 20 + 10,
+                    renk: renk
                 });
-                dusmanYaratmaZamani = Math.random() * 100 + 80; // Rastgele aralıklarla üret
             }
-            dusmanYaratmaZamani--;
+        }
+
+        function dusmanEkle() {
+            if (frame % 90 === 0) {
+                let tip = Math.random() > 0.4 ? "kara" : "hava";
+                if (tip === "kara") {
+                    dusmanlar.push({
+                        x: canvas.width + 50,
+                        y: 330,
+                        genislik: 45,
+                        yukseklik: 40,
+                        tip: "kara",
+                        renk: "#f59e0b"
+                    });
+                } else {
+                    dusmanlar.push({
+                        x: canvas.width + 50,
+                        y: 190 + Math.random() * 60,
+                        genislik: 40,
+                        yukseklik: 35,
+                        tip: "hava",
+                        renk: "#38bdf8",
+                        salinim: Math.random() * 5
+                    });
+                }
+            }
+        }
+
+        function guncelle() {
+            if (oyunBitti) return;
+            frame++;
+
+            // Parallaks Arka Plan Hızları
+            arkaPlanX1 -= 0.5;
+            arkaPlanX2 -= 2;
+            if (arkaPlanX1 <= -900) arkaPlanX1 = 0;
+            if (arkaPlanX2 <= -900) arkaPlanX2 = 0;
+
+            // Kedi Hareketi & Fizik
+            kedi.hizY += kedi.yercekimi;
+            kedi.y += kedi.hizY;
+
+            // Uçan Tekme İleri Atılma Yönetimi
+            if (kedi.tekmeAtiyorMu) {
+                kedi.x += kedi.hizX;
+                kedi.hizX *= 0.92; // Sürtünmeyle yavaşla
+                kedi.tekmeFrame--;
+                
+                // Kuyruk rüzgarı efekti parçacıkları
+                if (frame % 2 === 0) {
+                    partikuller.push({
+                        x: kedi.x,
+                        y: kedi.y + 30 + (Math.random() - 0.5) * 15,
+                        hizX: -4,
+                        hizY: (Math.random() - 0.5) * 2,
+                        boyut: Math.random() * 5 + 3,
+                        omur: 15,
+                        renk: "rgba(255, 71, 87, 0.6)"
+                    });
+                }
+
+                if (kedi.tekmeFrame <= 0) {
+                    kedi.tekmeAtiyorMu = false;
+                }
+            } else {
+                // Ekranda eski pozisyonuna yavaşça geri çekil
+                if (kedi.x > 120) kedi.x -= 1.5;
+            }
+
+            // Zemin Sınırı
+            if (kedi.y >= 310) {
+                kedi.y = 310;
+                kedi.hizY = 0;
+                if (!kedi.yerdeMi) {
+                    kedi.yerdeMi = true;
+                    kedi.ziplamaSayisi = 0;
+                    kedi.tekmeAtiyorMu = false;
+                    yaratToz(kedi.x + 20, 370, "#cbd5e1", 5);
+                }
+            }
+
+            // Koşma Tozu Efekti
+            if (kedi.yerdeMi && frame % 8 === 0) {
+                partikuller.push({
+                    x: kedi.x + 5,
+                    y: 365,
+                    hizX: -3,
+                    hizY: -Math.random() * 2,
+                    boyut: Math.random() * 3 + 1,
+                    omur: 12,
+                    renk: "rgba(255,255,255,0.15)"
+                });
+            }
+
+            dusmanEkle();
+
+            // Düşman Motoru & Çarpışma Testleri
+            for (let i = dusmanlar.length - 1; i >= 0; i--) {
+                let d = dusmanlar[i];
+                d.x -= oyunHizi;
+
+                if (d.tip === "hava") {
+                    d.y += Math.sin(frame * 0.08 + d.salinim) * 1.5; // Dalgalı uçuş mekaniği
+                }
+
+                // Gelişmiş Kutu Çarpışma Testi (AABB)
+                let kediVurucuGenislik = kedi.tekmeAtiyorMu ? kedi.genislik + 25 : kedi.genislik;
+                if (kedi.x < d.x + d.genislik &&
+                    kedi.x + kediVurucuGenislik > d.x &&
+                    kedi.y < d.y + d.yukseklik &&
+                    kedi.y + kedi.yukseklik > d.y) {
+                    
+                    if (kedi.tekmeAtiyorMu) {
+                        // KOMBOLU UÇAN TEKME BAŞARILI!
+                        yaratToz(d.x + 20, d.y + 20, "#ff4757", 15);
+                        yaratToz(d.x + 20, d.y + 20, "#fff200", 10);
+                        
+                        yazilar.push({
+                            x: d.x,
+                            y: d.y - 20,
+                            metin: "POW! 💥",
+                            omur: 20,
+                            renk: "#fff200"
+                        });
+
+                        dusmanlar.splice(i, 1);
+                        skor += 25;
+                        oyunHizi += 0.15; // Oyun kademeli hızlanır
+                    } else {
+                        // Hasar Alındı
+                        yaratToz(kedi.x + 30, kedi.y + 30, "#ff4757", 12);
+                        dusmanlar.splice(i, 1);
+                        can--;
+                        
+                        yazilar.push({
+                            x: kedi.x,
+                            y: kedi.y - 20,
+                            metin: "OUCH! 💔",
+                            omur: 25,
+                            renk: "#ff6b81"
+                        });
+
+                        if (can <= 0) oyunBitti = true;
+                    }
+                } else if (d.x + d.genislik < 0) {
+                    dusmanlar.splice(i, 1);
+                    skor += 10;
+                }
+            }
+
+            // Parçacıkları Güncelle
+            for (let i = partikuller.length - 1; i >= 0; i--) {
+                let p = partikuller[i];
+                p.x += p.hizX;
+                p.y += p.hizY;
+                p.omur--;
+                if (p.omur <= 0) partikuller.splice(i, 1);
+            }
+
+            // Kayan Yazıları Güncelle
+            for (let i = yazilar.length - 1; i >= 0; i--) {
+                yazilar[i].y -= 1;
+                yazilar[i].omur--;
+                if (yazilar[i].omur <= 0) yazilar.splice(i, 1);
+            }
+        }
+
+        function ciz() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // --- ARKA PLAN (Gökyüzü & Yıldızlar) ---
+            ctx.fillStyle = "#090d16";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+            for (let i = 0; i < 20; i++) {
+                let starX = (Math.sin(i * 333) * 0.5 + 0.5) * canvas.width;
+                let starY = (Math.cos(i * 777) * 0.5 + 0.5) * 200;
+                ctx.fillRect(starX, starY, 2, 2);
+            }
+
+            // PARALLAKS SEVİYE 1: Uzak Siluet Dağ/Binalar
+            ctx.fillStyle = "#111a2e";
+            for (let i = 0; i < 3; i++) {
+                let xPos = arkaPlanX1 + i * 450;
+                ctx.fillRect(xPos, 220, 180, 150);
+                ctx.fillRect(xPos + 220, 180, 140, 190);
+            }
+
+            // PARALLAKS SEVİYE 2: Yakın Şehir Detayları
+            ctx.fillStyle = "#16223f";
+            for (let i = 0; i < 4; i++) {
+                let xPos = arkaPlanX2 + i * 300;
+                ctx.fillRect(xPos, 250, 120, 120);
+                ctx.fillRect(xPos + 150, 210, 90, 160);
+                // Işık pencereleri çizimi
+                ctx.fillStyle = "rgba(245, 158, 11, 0.15)";
+                ctx.fillRect(xPos + 20, 270, 15, 15);
+                ctx.fillRect(xPos + 170, 230, 15, 25);
+                ctx.fillStyle = "#16223f";
+            }
+
+            // TEKNOLOJİK ZEMİN ÇİZGİSİ
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(0, 370, canvas.width, 80);
+            ctx.fillStyle = "#ff4757";
+            ctx.fillRect(0, 370, canvas.width, 4);
+
+            // --- PARTİKÜLLERİ ÇİZ ---
+            partikuller.forEach(p => {
+                ctx.fillStyle = p.renk;
+                ctx.fillRect(p.x, p.y, p.boyut, p.boyut);
+            });
+
+            // --- NİNJA KEDİYİ ÇİZ (PIXEL ART TARZI DETAYLI) ---
+            ctx.save();
+            ctx.translate(kedi.x, kedi.y);
+
+            if (kedi.tekmeAtiyorMu) {
+                // --- UÇAN TEKME ANİMASYON DURUŞU ---
+                // Tekme Efekt Aurası
+                ctx.fillStyle = "rgba(255, 71, 87, 0.35)";
+                ctx.beginPath();
+                ctx.arc(65, 30, 24, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Gövde (Havada Yatay Eğik)
+                ctx.fillStyle = "#f97316";
+                ctx.fillRect(5, 15, 40, 24);
+                // Göbek Beyazlığı
+                ctx.fillStyle = "#f8fafc";
+                ctx.fillRect(15, 27, 20, 12);
+                // İleri Uzatılmış Tekme Ayağı
+                ctx.fillStyle = "#ea580c";
+                ctx.fillRect(45, 22, 22, 10);
+                ctx.fillStyle = "#f8fafc"; // Pati ucu beyaz
+                ctx.fillRect(63, 22, 5, 10);
+                // Kafa (Sağa Dönük)
+                ctx.fillStyle = "#f97316";
+                ctx.fillRect(25, 2, 20, 20);
+                // Kulaklar (Geriye Yatık)
+                ctx.fillRect(23, -4, 6, 6);
+                ctx.fillRect(35, -4, 6, 6);
+                // Kararlı Göz (Ninja Bandanalı Gibi Siyah)
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(38, 6, 8, 4);
+                ctx.fillStyle = "#fff200"; // Parlayan göz bebeği
+                ctx.fillRect(42, 6, 3, 3);
+                // Arkada Kalan Katlanmış Kuyruk
+                ctx.fillStyle = "#ea580c";
+                ctx.fillRect(-10, 10, 15, 8);
+            } else {
+                // --- KOŞMA / ZIPLAMA NORMAL DURUŞ ---
+                // Gövde
+                ctx.fillStyle = "#f97316";
+                ctx.fillRect(10, 15, 35, 30);
+                ctx.fillStyle = "#f8fafc"; // Göğüs beyazlığı
+                ctx.fillRect(28, 25, 17, 15);
+                // Kafa
+                ctx.fillStyle = "#f97316";
+                ctx.fillRect(20, -2, 24, 24);
+                // Kulaklar
+                ctx.fillRect(22, -10, 6, 8);
+                ctx.fillRect(36, -10, 6, 8);
+                // Gözler
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(34, 4, 4, 6);
+                // Ayaklar (Yerde Koşma Hissiyatı)
+                ctx.fillStyle = "#ea580c";
+                let adim = (frame % 10 > 5 && kedi.yerdeMi) ? 6 : 0;
+                ctx.fillRect(14, 45, 8, Adim ? 10 : 12);
+                ctx.fillRect(32, 45, 8, adim ? 12 : 10);
+                // Kuyruk (Yukarı Doğru Sallanan)
+                ctx.fillStyle = "#ea580c";
+                let salla = Math.sin(frame * 0.2) * 4;
+                ctx.fillRect(2, 20 + salla, 8, 12);
+            }
+            ctx.restore();
+
+            // --- DÜŞMANLARI ÇİZ ---
+            dusmanlar.forEach(d => {
+                ctx.save();
+                ctx.translate(d.x, d.y);
+
+                if (d.tip === "kara") {
+                    // Siber Koruyucu Robot Köpek
+                    ctx.fillStyle = "#ef4444"; // Kırmızı mekanik gövde
+                    ctx.fillRect(5, 10, 35, 25);
+                    ctx.fillStyle = "#991b1b";
+                    ctx.fillRect(25, 2, 16, 14); // Kafa
+                    ctx.fillStyle = "#38bdf8"; // Neon göz mavi
+                    ctx.fillRect(27, 5, 6, 3);
+                    // Ayaklar
+                    ctx.fillStyle = "#ef4444";
+                    ctx.fillRect(10, 35, 6, 8);
+                    ctx.fillRect(28, 35, 6, 8);
+                } else {
+                    // Mekanik Uçan Engel (Drone Kuş)
+                    ctx.fillStyle = "#38bdf8"; // Kanat/Gövde
+                    ctx.fillRect(10, 10, 25, 18);
+                    ctx.fillStyle = "#cbd5e1";
+                    // Hareketli Kanatlar
+                    let kanat = Math.sin(frame * 0.4) * 12;
+                    ctx.fillRect(16, 10 - kanat, 6, kanat);
+                    ctx.fillStyle = "#0f172a"; // Kamera gözü
+                    ctx.fillRect(10, 14, 4, 4);
+                }
+                ctx.restore();
+            });
+
+            // --- REAKSİYON METİNLERİNİ ÇİZ ---
+            yazilar.forEach(y => {
+                ctx.fillStyle = y.renk;
+                ctx.font = "bold 20px 'Inter', sans-serif";
+                ctx.fillText(y.metin, y.x, y.y);
+            });
+
+            // --- BAŞARILI HUD ARAYÜZÜ ---
+            ctx.fillStyle = "rgba(15, 23, 42, 0.6)";
+            ctx.fillRect(20, 20, 180, 45);
+            ctx.fillRect(canvas.width - 200, 20, 180, 45);
+
+            ctx.fillStyle = "#f8fafc";
+            ctx.font = "bold 18px 'Inter', sans-serif";
+            ctx.fillText(`SCORE: ${skor}`, 40, 48);
+
+            let canKalpler = "";
+            for (let c = 0; c < can; c++) canKalpler += "❤️";
+            ctx.fillText(`HEALTH: ${canKalpler}`, canvas.width - 185, 48);
+
+            // --- OYUN BİTTİ EKRANI ---
+            if (oyunBitti) {
+                ctx.fillStyle = "rgba(2, 6, 23, 0.9)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "bold 46px 'Inter', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("GÖREV TAMAMLANAMADI 💥", canvas.width / 2, canvas.height / 2 - 30);
+
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "20px 'Inter', sans-serif";
+                ctx.fillText(`Skorunuz: ${skor}`, canvas.width / 2, canvas.height / 2 + 15);
+
+                ctx.fillStyle = "#2ed573";
+                ctx.font = "bold 22px 'Inter', sans-serif";
+                ctx.fillText("Yeniden Başlamak İçin Ekrana Tıkla", canvas.width / 2, canvas.height / 2 + 75);
+                ctx.textAlign = "start";
+            }
         }
 
         function yenidenBaslat() {
             skor = 0;
             can = 3;
             dusmanlar = [];
-            dusmanHizi = 5;
+            partikuller = [];
+            yazilar = [];
+            oyunHizi = 6;
             oyunBitti = false;
-            kedi.y = 300;
+            kedi.y = 310;
+            kedi.x = 120;
             kedi.hizY = 0;
             kedi.yerdeMi = true;
             kedi.tekmeAtiyorMu = false;
             döngü();
-        }
-
-        function guncelle() {
-            if (oyunBitti) return;
-
-            // Fizik ve Yerçekimi
-            kedi.hizY += kedi.yercekimi;
-            kedi.y += kedi.hizY;
-
-            // Yere basma kontrolü
-            if (kedi.y >= 300) {
-                kedi.y = 300;
-                kedi.hizY = 0;
-                kedi.yerdeMi = true;
-                kedi.tekmeAtiyorMu = false; // Yere inince tekme biter
-            }
-
-            dusmanUret();
-
-            // Düşman hareketleri ve Çarpışma Testi
-            for (let i = dusmanlar.length - 1; i >= 0; i--) {
-                dusmanlar[i].x -= dusmanHizi;
-
-                // Çarpışma algılama alanı
-                if (kedi.x < dusmanlar[i].x + dusmanlar[i].width &&
-                    kedi.x + kedi.width + (kedi.tekmeAtiyorMu ? 20 : 0) > dusmanlar[i].x &&
-                    kedi.y < dusmanlar[i].y + dusmanlar[i].height &&
-                    kedi.y + kedi.height > dusmanlar[i].y) {
-                    
-                    if (kedi.tekmeAtiyorMu && !kedi.yerdeMi) {
-                        // Havada çarptıysa UÇAN TEKME ATMIŞTIR! Düşman uçar gider.
-                        dusmanlar.splice(i, 1);
-                        skor += 10;
-                        dusmanHizi += 0.2; // Oyun gitgide hızlanır
-                    } else {
-                        // Yerde çarptıysa darbe alır!
-                        dusmanlar.splice(i, 1);
-                        can--;
-                        if (can <= 0) {
-                            oyunBitti = true;
-                        }
-                    }
-                } else if (dusmanlar[i].x + dusmanlar[i].width < 0) {
-                    // Ekrandan çıkan düşmanlar silinir ve düz puan gelir
-                    dusmanlar.splice(i, 1);
-                    skor += 5;
-                }
-            }
-        }
-
-        function ciz() {
-            // Arka planı temizle
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Arka plan çizgisi (Yer/Zemin)
-            ctx.strokeStyle = "rgba(255,255,255,0.1)";
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(0, 350);
-            ctx.lineTo(canvas.width, 350);
-            ctx.stroke();
-
-            // 1. KEDİYİ ÇİZ (Sarı/Turuncu Tatlı Savaşçı Kedi)
-            ctx.save();
-            ctx.translate(kedi.x, kedi.y);
-
-            // Kedi Gövdesi
-            ctx.fillStyle = "#ffb142";
-            ctx.beginPath();
-            ctx.ellipse(25, 25, 20, 15, kedi.tekmeAtiyorMu ? Math.PI/4 : 0, 0, Math.PI*2);
-            ctx.fill();
-
-            // Kedi Kafası
-            ctx.fillStyle = "#ffa502";
-            ctx.beginPath();
-            ctx.arc(kedi.tekmeAtiyorMu ? 40 : 35, 12, 12, 0, Math.PI*2);
-            ctx.fill();
-
-            // Kulaklar
-            ctx.fillStyle = "#ffa502";
-            ctx.beginPath(); // Sol Kulak
-            ctx.moveTo(kedi.tekmeAtiyorMu ? 35 : 28, 2);
-            ctx.lineTo(kedi.tekmeAtiyorMu ? 40 : 33, -6);
-            ctx.lineTo(kedi.tekmeAtiyorMu ? 43 : 38, 4);
-            ctx.fill();
-
-            // Gözler
-            ctx.fillStyle = "#1e293b";
-            ctx.beginPath();
-            ctx.arc(kedi.tekmeAtiyorMu ? 44 : 39, 10, 2, 0, Math.PI*2);
-            ctx.fill();
-
-            // UÇAN TEKME BACAĞI VE EFEKTİ
-            if (kedi.tekmeAtiyorMu) {
-                // İleri fırlayan tekme ayağı
-                ctx.strokeStyle = "#ff4757";
-                ctx.lineWidth = 6;
-                ctx.lineCap = "round";
-                ctx.beginPath();
-                ctx.moveTo(30, 30);
-                ctx.lineTo(55, 35);
-                ctx.stroke();
-
-                // Tekme rüzgarı efekti (Aura)
-                ctx.strokeStyle = "rgba(255, 71, 87, 0.4)";
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(60, 35, 8, 0, Math.PI*2);
-                ctx.stroke();
-            } else {
-                // Normal bacaklar
-                ctx.fillStyle = "#ffa502";
-                ctx.fillRect(10, 35, 6, 12);
-                ctx.fillRect(30, 35, 6, 12);
-            }
-
-            ctx.restore();
-
-            // 2. DÜŞMANLARI ÇİZ (Köpekçikler)
-            dusmanlar.forEach(dusman => {
-                ctx.fillStyle = "#ced6e0";
-                ctx.beginPath();
-                ctx.arc(dusman.x + 20, dusman.y + 20, 18, 0, Math.PI*2);
-                ctx.fill();
-                // Kulaklar
-                ctx.fillStyle = "#a4b0be";
-                ctx.fillRect(dusman.x + 5, dusman.y + 5, 8, 15);
-                // Göz
-                ctx.fillStyle = "#2f3542";
-                ctx.beginPath();
-                ctx.arc(dusman.x + 14, dusman.y + 16, 2.5, 0, Math.PI*2);
-                ctx.fill();
-                // Burun
-                ctx.fillStyle = "#ff4757";
-                ctx.beginPath();
-                ctx.arc(dusman.x + 6, dusman.y + 22, 3, 0, Math.PI*2);
-                ctx.fill();
-            });
-
-            // 3. ARAYÜZ BİLGİLERİ (Skor ve Can)
-            ctx.fillStyle = "#f8fafc";
-            ctx.font = "bold 18px 'Inter', sans-serif";
-            ctx.fillText(`Skor: ${skor}`, 30, 40);
-            
-            // Can Kalpleri
-            let kalpler = "";
-            for(let c=0; c<can; c++) kalpler += "❤️";
-            ctx.fillText(`Can: ${kalpler}`, canvas.width - 150, 40);
-
-            // Oyun Bitti Ekranı
-            if (oyunBitti) {
-                ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = "#ff4757";
-                ctx.font = "bold 40px 'Inter', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("OYUN BİTTİ 💥", canvas.width / 2, canvas.height / 2 - 20);
-
-                ctx.fillStyle = "#f8fafc";
-                ctx.font = "20px 'Inter', sans-serif";
-                ctx.fillText(`Toplam Skorun: ${skor}`, canvas.width / 2, canvas.height / 2 + 20);
-                
-                ctx.fillStyle = "#2ed573";
-                ctx.fillText("Yeniden Başlamak İçin Tıkla veya Boşluğa Bas", canvas.width / 2, canvas.height / 2 + 70);
-                ctx.textAlign = "start"; // Hizalamayı düzelt
-            }
         }
 
         function döngü() {
@@ -474,7 +665,7 @@
             }
         }
 
-        // Oyunu ilk kez tetikle
+        // Oyunu Başlat
         döngü();
     </script>
 
