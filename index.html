@@ -28,7 +28,7 @@
             box-shadow: 0px 10px 25px rgba(0,0,0,0.6);
         }
 
-        /* SAĞDAKİ SABİT KEDİŞLER BUTONU */
+        /* SAĞDAKİ SABİT KEDİSLER BUTONU */
         .kedi-butonu {
             position: fixed;
             right: 20px;
@@ -126,14 +126,15 @@
     <!-- Ve senin görselin -->
     <img src="resim.jpg" alt="Sitemizin Görseli" class="site-gorseli">
 
-    <!-- SAĞDAKİ KEDİŞLER BUTONU -->
+    <!-- SAĞDAKİ KEDİSLER BUTONU (Ş ve i harfleri kedisler olarak düzeltildi) -->
     <button class="kedi-butonu" onclick="modaliAc()">🐱 Kedisler</button>
 
     <!-- PENCERE AÇILDIĞINDA GÖRÜNECEK ALAN -->
     <div id="kediPencerem" class="modal">
         <div class="modal-icerik">
             <span class="kapat-butonu" onclick="modaliKapat()">&times;</span>
-            <h2 style="margin-top: 0; color: #ff4757;">Günün Kedisi 🐾</h2>
+            <!-- Başlık Güncellendi -->
+            <h2 style="margin-top: 0; color: #ff4757;">Günün Kedisi! 🐾</h2>
             
             <!-- İlk açılışta görünecek olan ilk kedi fotoğrafın -->
             <img id="kediResmi" src="Image (9).jpg" alt="Kedi" class="kedi-foto">
@@ -144,13 +145,15 @@
 
     <!-- BUTONLARI ÇALIŞTIRAN SİHİRLİ KODLAR (JAVASCRIPT) -->
     <script>
-        // Senin klasöründeki kedi fotoğraflarının tam isim listesi
+        // Yeni eklenen 14 ve 15 numaralı fotoğraflarla birlikte güncel liste
         const kediListesi = [
             "Image (9).jpg",
             "Image (10).jpg",
             "Image (11).jpg",
             "Image (12).jpg",
-            "Image (13).jpg"
+            "Image (13).jpg",
+            "Image (14).jpg",
+            "Image (15).jpg"
         ];
         
         let sira = 0;
