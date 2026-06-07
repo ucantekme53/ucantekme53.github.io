@@ -164,7 +164,7 @@
                 kiz.y += kiz.hizY;
                 kiz.hizY += 0.5;
 
-                if (kiz.x + 75 >= erkek.x + erkek.sarsilmaX) {
+                if (kiz.x + 75 >= PointX()) {
                     yenenTekmeSkoru++;
                     kiz.durum = "geriDonuyor";
                     kiz.hizX = -9;
@@ -172,7 +172,7 @@
 
                     if (yenenTekmeSkoru >= 3) {
                         erkek.durum = "yereDusuldu";
-                        dusmeZamanlayicisi = 100; 
+                        dusmeZamanlayicisi = 110; 
                     } else {
                         erkek.durum = "darbeAldi";
                         erkek.sarsilmaX = 20;
@@ -181,7 +181,7 @@
                     for (let i = 0; i < 6; i++) {
                         kalpler.push({
                             x: erkek.x,
-                            y: erkek.y + 20,
+                            y: PointY() + 20,
                             hizX: (Math.random() - 0.3) * 6,
                             hizY: (Math.random() - 0.7) * 6,
                             boyut: Math.random() * 10 + 8,
@@ -230,13 +230,10 @@
                 }
             }
 
-            // Erkek yere düşerken ekrandan çıkmaması için X koordinatını koruyoruz
             if (erkek.durum === "yereDusuldu") {
                 if (erkek.aci < Math.PI / 2) {
-                    erkek.aci += 0.12; // Yumuşak devrilme hızı
-                    erkek.y += 0.6;    // Çim hizasına oturtma ayarı
+                    erkek.aci += 0.08; 
                 }
-                
                 dusmeZamanlayicisi--;
                 if (dusmeZamanlayicisi <= 0) {
                     erkek.durum = "yerdenKalkiyor";
@@ -246,10 +243,8 @@
             if (erkek.durum === "yerdenKalkiyor") {
                 if (erkek.aci > 0) {
                     erkek.aci -= 0.08;
-                    erkek.y -= 0.6;
                 } else {
                     erkek.aci = 0;
-                    erkek.y = 295;
                     kiz.durum = "kosuyor";
                     erkek.durum = "kosuyor";
                     kiz.hizX = 4;
@@ -301,15 +296,29 @@
             }
         }
 
+        function PointX() { return erkek.x + (erkek.durum === "darbeAldi" ? PointSarsilma() : 0); }
+        function PointY() { return erkek.y; }
+        function PointSarsilma() { return interstate = erkek.sarsilmaX; }
+
         function ciz() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // GÜNEŞ GERİ GELDİ ☀️
+            ctx.fillStyle = "#ffde17";
+            ctx.beginPath(); ctx.arc(120, 100, 45, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "#ffde17"; ctx.lineWidth = 5;
+            for(let a=0; a<Math.PI*2; a+=Math.PI/6) {
+                ctx.beginPath();
+                ctx.moveTo(120 + Math.cos(a)*55, 100 + Math.sin(a)*55);
+                ctx.lineTo(120 + Math.cos(a)*78, 100 + Math.sin(a)*78);
+                ctx.stroke();
+            }
 
             // BULUTLAR
             ctx.fillStyle = "#29b6f6";
             ctx.beginPath(); ctx.arc(640, 80, 35, 0, Math.PI*2); ctx.arc(680, 70, 45, 0, Math.PI*2); ctx.arc(720, 80, 35, 0, Math.PI*2); ctx.fill();
             ctx.beginPath(); ctx.arc(440, 100, 30, 0, Math.PI*2); ctx.arc(475, 90, 38, 0, Math.PI*2); ctx.arc(510, 100, 30, 0, Math.PI*2); ctx.fill();
 
-            // Süs Arka Plan Kalpleri
             drawHeart(370, 160, 20, "#ff4757");
             drawHeart(790, 230, 15, "#ff4757");
 
@@ -321,7 +330,7 @@
 
             ctx.beginPath(); ctx.arc(kx, ky - 18, 14, 0, Math.PI * 2); ctx.stroke();
             ctx.fillStyle = "#ff6b81";
-            ctx.beginPath(); ctx.arc(kx - 5, ky - 20, 2, 0, Math.PI*2); ctx.arc(kx + 5, ky - 20, 2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(kx - 5, ky - 20, 2, 0, Math.PI*2); ctx.arc(kx + 5, ky - 20, 2, 0, Math.PI*2); fill();
             ctx.beginPath(); ctx.arc(kx, ky - 15, 5, 0, Math.PI); ctx.stroke();
 
             ctx.strokeStyle = "#8d6e63"; ctx.lineWidth = 4;
@@ -374,9 +383,8 @@
             // ERKEK KARAKTERİ
             ctx.save();
             
-            let sarsilma = (erkek.durum === "darbeAldi" ? erkek.sarsilmaX : 0);
-            // Karakterin ayak tabanını merkez alarak döndürüyoruz ki yer seviyesinde kalsın
-            ctx.translate(erkek.x + sarsilma, erkek.y + 115);
+            // Sabit ayak tabanı eksenli devrilme rotasyonu (Ekrandan kaybolmayı önler)
+            ctx.translate(PointX(), erkek.y + 115);
             ctx.rotate(erkek.aci);
             ctx.translate(0, -115);
 
@@ -385,28 +393,22 @@
 
             ctx.beginPath(); ctx.arc(ex, ey - 18, 15, 0, Math.PI * 2); ctx.stroke();
 
-            // Saçlar
             ctx.fillStyle = "#000000";
             ctx.beginPath();
             ctx.arc(ex - 8, ey - 32, 7, 0, Math.PI * 2); ctx.arc(ex, ey - 34, 8, 0, Math.PI * 2); ctx.arc(ex + 8, ey - 31, 7, 0, Math.PI * 2);
             ctx.fill();
 
-            // YUVARLAK HATLI COOL GÖZLÜK
+            // YUVARLAK VE TAM ÇİZİMDEKİ GÖZLÜK
             ctx.strokeStyle = "#000000"; ctx.lineWidth = 3.5;
             ctx.fillStyle = "#000000";
-            
-            // Sol Cam
             ctx.beginPath(); ctx.arc(ex - 7, ey - 18, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-            // Sağ Cam
             ctx.beginPath(); ctx.arc(ex + 7, ey - 17, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-            // Gözlük Köprüsü ve Sapları
             ctx.beginPath();
-            ctx.moveTo(ex - 1, ey - 18); ctx.lineTo(ex + 1, ey - 17); // orta köprü
-            ctx.moveTo(ex - 13, ey - 19); ctx.lineTo(ex - 18, ey - 17); // sol sap
-            ctx.moveTo(ex + 13, ey - 16); ctx.lineTo(ex + 18, ey - 15); // sağ sap
+            ctx.moveTo(ex - 1, ey - 18); ctx.lineTo(ex + 1, ey - 17);
+            ctx.moveTo(ex - 13, ey - 19); ctx.lineTo(ex - 18, ey - 17);
+            ctx.moveTo(ex + 13, ey - 16); ctx.lineTo(ex + 18, ey - 15);
             ctx.stroke();
 
-            // Ağız
             ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 3;
             ctx.beginPath();
             if (erkek.durum === "darbeAldi" || erkek.durum === "yereDusuldu") {
@@ -416,7 +418,6 @@
             }
             ctx.stroke();
 
-            // Gövde ve kollar
             ctx.lineWidth = 4; ctx.strokeStyle = "#ff6b81";
             ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex, ey + 50); ctx.stroke();
 
@@ -435,11 +436,9 @@
             }
             ctx.stroke();
 
-            // Orijinal çizimdeki pembe detaylar
             ctx.fillStyle = "rgba(255, 107, 129, 0.6)";
             ctx.beginPath(); ctx.arc(ex - 14, ey + 20, 10, 0, Math.PI*2); ctx.arc(ex + 14, ey + 20, 10, 0, Math.PI*2); ctx.fill();
 
-            // Bacaklar
             ctx.beginPath();
             if (erkek.durum === "darbeAldi" || erkek.durum === "yereDusuldu") {
                 ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 18, ey + 85);
@@ -458,7 +457,7 @@
             ctx.stroke();
             ctx.restore();
 
-            // EFEKTLER VE YAZILAR
+            // EFEKTLER
             kalpler.forEach(p => drawHeart(p.x, p.y, p.boyut / 2, "#ff4757", true));
             sarilmaKalpleri.forEach(h => drawHeart(h.x, h.y, h.boyut, "#ff3838", false));
 
