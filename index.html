@@ -90,12 +90,14 @@
             sarsilmaX: 0,
             durum: "normal", 
             animFrame: 0,
-            aci: 0 
+            aci: 0,
+            hizX: 0,
+            hizY: 0
         };
 
         function tetikleUcanTekme() {
-            // Eğer her şey bittiyse veya komedi aşamasındaysa tıklamayla sıfırla
-            if (kiz.durum === "sonDarbe" || (kiz.durum === "sarildi" && sonTekmeAtildi)) {
+            // Eğer oyun bittiyse tıklama ile her şeyi ilk haline sıfırla
+            if (kiz.durum === "sonDarbe" || (kiz.durum === "sarildi" && sonTekmeAtildi) || erkek.durum === "yerdeYatiyor") {
                 yenenTekmeSkoru = 0;
                 sonTekmeAtildi = false;
                 sarilmaZamanlayicisi = 0;
@@ -106,6 +108,8 @@
                 erkek.durum = "normal";
                 erkek.sarsilmaX = 0;
                 erkek.aci = 0;
+                erkek.hizX = 0;
+                erkek.hizY = 0;
                 sarilmaKalpleri = [];
                 efektYazilari = [];
                 kalpler = [];
@@ -290,7 +294,7 @@
                     });
                 }
 
-                // Sarıldıktan 70 frame sonra erkek lafı koyuyor, 140 frame sonra kız otomatik uçuyor!
+                // Zaman dolunca kız otomatik son tekmeyi vuruyor
                 if (sarilmaZamanlayicisi >= 130) {
                     sarilmaKalpleri = []; 
                     kiz.durum = "otomatikUcanTekme";
@@ -311,8 +315,8 @@
                     kiz.hizX = -8;
                     kiz.hizY = -4;
                     erkek.durum = "sonDarbeUcus";
-                    erkek.hizX = 15;
-                    erkek.hizY = -8;
+                    erkek.hizX = 14;
+                    erkek.hizY = -9;
                 }
             }
 
@@ -325,14 +329,22 @@
                 if (kiz.x <= kiz.startX) { kiz.x = kiz.startX; kiz.durum = "sonDarbe"; }
             }
 
-            // Erkeğin son darbeyle fırlayıp tekrar çimlere yıkılması
+            // Erkeğin son darbeyle fırlayıp ekran sınırında kalması (GÜNCELLENEN FİZİK)
             if (erkek.durum === "sonDarbeUcus") {
                 erkek.x += erkek.hizX;
                 erkek.y += erkek.hizY;
                 erkek.hizY += 0.6;
+                
                 if (erkek.aci < Math.PI / 2) {
                     erkek.aci += 0.09;
                 }
+
+                // Ekranın en sağ sınırını kontrol et (Karakterin dışarı taşmasını engeller)
+                if (erkek.x >= canvas.width - 60) {
+                    erkek.x = canvas.width - 60;
+                    erkek.hizX = 0;
+                }
+
                 if (erkek.y >= 295) {
                     erkek.y = 295;
                     erkek.hizX = 0;
@@ -539,13 +551,11 @@
                 ctx.strokeStyle = "#ff6b81";
                 ctx.lineWidth = 3;
                 
-                // Konuşma balonu kutusu
                 ctx.beginPath();
                 ctx.roundRect(430, 160, 170, 50, 15);
                 ctx.fill();
                 ctx.stroke();
                 
-                // Balonun oku
                 ctx.beginPath();
                 ctx.moveTo(460, 210);
                 ctx.lineTo(450, 225);
@@ -554,7 +564,6 @@
                 ctx.fill();
                 ctx.stroke();
 
-                // Yazı
                 ctx.fillStyle = "#1e1b4b";
                 ctx.font = "bold 20px 'Caveat', cursive";
                 ctx.textAlign = "center";
