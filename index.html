@@ -50,7 +50,7 @@
             height: auto;
             cursor: pointer;
         }
-    </script>
+    </style>
 </head>
 <body>
 
@@ -75,7 +75,7 @@
             y: 300,
             hizX: 0,
             hizY: 0,
-            durum: "yuruyor", // yuruyor, havalaniyor, geriDonuyor, kosuyor, sarildi
+            durum: "yuruyor", 
             animFrame: 0
         };
 
@@ -85,7 +85,7 @@
             y: 295,
             sarsilmaX: 0,
             hizX: 0,
-            durum: "normal", // normal, darbeAldi, bekliyor, kosuyor, sarildi
+            durum: "normal", 
             animFrame: 0
         };
 
@@ -95,11 +95,14 @@
                 kiz.hizY = -11;
                 kiz.hizX = 13;
                 erkek.durum = "normal";
-                erkek.x = erkek.startX;
+                erkek.x = staticErkekX();
                 kiz.x = kiz.startX;
                 sarilmaKalpleri = [];
+                efektYazilari = [];
             }
         }
+
+        function staticErkekX() { return 620; }
 
         window.addEventListener("keydown", (e) => { if (e.code === "Space") { e.preventDefault(); tetikleUcanTekme(); } });
         canvas.addEventListener("mousedown", (e) => { e.preventDefault(); tetikleUcanTekme(); });
@@ -140,13 +143,11 @@
             kiz.animFrame++;
             erkek.animFrame++;
 
-            // --- FİZİK MOTORU VE DURUM YÖNETİMİ ---
             if (kiz.durum === "havalaniyor") {
                 kiz.x += kiz.hizX;
                 kiz.y += kiz.hizY;
                 kiz.hizY += 0.5;
 
-                // Vuruş Anı
                 if (kiz.x + 75 >= erkek.x + erkek.sarsilmaX) {
                     erkek.durum = "darbeAldi";
                     erkek.sarsilmaX = 20;
@@ -154,7 +155,6 @@
                     kiz.hizX = -9;
                     kiz.hizY = -4;
 
-                    // Kırık Kalp Parçacıkları
                     for (let i = 0; i < 6; i++) {
                         kalpler.push({
                             x: erkek.x,
@@ -166,12 +166,11 @@
                         });
                     }
 
-                    // Tepki yazısı
                     efektYazilari.push({
                         x: erkek.x - 60,
-                        y: erkek.y - 45,
+                        y: staticErkekX() - 370,
                         metin: "ne yaptığına bak :)",
-                        omur: 50 // Görünme süresi
+                        omur: 50 
                     });
                 }
 
@@ -204,7 +203,6 @@
                 }
             }
 
-            // Yazı kaybolunca koşma evresi başlasın
             if (erkek.durum === "bekliyor" && efektYazilari.length === 0) {
                 kiz.durum = "kosuyor";
                 erkek.durum = "kosuyor";
@@ -212,21 +210,18 @@
                 erkek.hizX = -4;
             }
 
-            // Koşma ve Sarılma Buluşması
             if (kiz.durum === "kosuyor" && erkek.durum === "kosuyor") {
                 kiz.x += kiz.hizX;
                 erkek.x += erkek.hizX;
 
-                // Aradaki mesafe kapandığında (Kucaklaşma noktası)
                 if (kiz.x + 35 >= erkek.x - 10) {
                     kiz.durum = "sarildi";
                     erkek.durum = "sarildi";
-                    kiz.x = 385; // Ortak merkez noktası
+                    kiz.x = 385; 
                     erkek.x = 415;
                 }
             }
 
-            // Sarılma kalpleri efekti
             if (kiz.durum === "sarildi") {
                 if (frame % 8 === 0) {
                     sarilmaKalpleri.push({
@@ -239,7 +234,6 @@
                 }
             }
 
-            // Efekt güncellemeleri
             for (let i = kalpler.length - 1; i >= 0; i--) {
                 kalpler[i].x += kalpler[i].hizX;
                 kalpler[i].y += kalpler[i].hizY;
@@ -263,7 +257,6 @@
         function ciz() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // --- ARKA PLAN ---
             ctx.fillStyle = "#ffde17";
             ctx.beginPath(); ctx.arc(120, 100, 45, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = "#ffde17"; ctx.lineWidth = 5;
@@ -281,22 +274,18 @@
             drawHeart(370, 160, 20, "#ff4757");
             drawHeart(790, 230, 15, "#ff4757");
 
-            // --- KIZ KARAKTER ---
             ctx.save();
             ctx.translate(kiz.x, kiz.y);
-
             let kx = 0, ky = 30;
             ctx.strokeStyle = "#ff6b81"; 
             ctx.lineWidth = 4;
             ctx.lineCap = "round";
 
-            // Kafa ve yüz
             ctx.beginPath(); ctx.arc(kx, ky - 18, 14, 0, Math.PI * 2); ctx.stroke();
             ctx.fillStyle = "#ff6b81";
             ctx.beginPath(); ctx.arc(kx - 5, ky - 20, 2, 0, Math.PI*2); ctx.arc(kx + 5, ky - 20, 2, 0, Math.PI*2); ctx.fill();
             ctx.beginPath(); ctx.arc(kx, ky - 15, 5, 0, Math.PI); ctx.stroke();
 
-            // Saçlar ve Fiyonk
             ctx.strokeStyle = "#8d6e63"; ctx.lineWidth = 4;
             ctx.beginPath();
             ctx.moveTo(kx - 10, ky - 25); ctx.bezierCurveTo(kx - 25, ky - 15, kx - 15, ky, kx - 22, ky + 25);
@@ -306,21 +295,17 @@
             ctx.beginPath(); ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 22, ky - 34); ctx.lineTo(kx - 22, ky - 22); ctx.closePath(); ctx.fill();
             ctx.beginPath(); ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 2, ky - 34); ctx.lineTo(kx - 2, ky - 22); ctx.closePath(); ctx.fill();
 
-            // Gövde
             ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 4;
             ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx, ky + 45); ctx.stroke();
 
-            // Kollar
             ctx.beginPath();
             if (kiz.durum === "havalaniyor") {
                 ctx.moveTo(kx, ky + 10); ctx.lineTo(kx - 18, ky - 2);
                 ctx.moveTo(kx, ky + 10); ctx.lineTo(kx + 12, ky - 5);
             } else if (kiz.durum === "kosuyor") {
-                // Sevgiyle öne uzanan kollar
                 ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 22, ky + 6);
                 ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 18, ky + 22);
             } else if (kiz.durum === "sarildi") {
-                // Erkeği saran kol pozisyonu
                 ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 25, ky + 15);
             } else {
                 let salinim = Math.sin(kiz.animFrame * 0.15) * 8;
@@ -329,7 +314,6 @@
             }
             ctx.stroke();
 
-            // Bacaklar
             ctx.beginPath();
             if (kiz.durum === "havalaniyor") {
                 ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 44, ky + 32); 
@@ -347,27 +331,20 @@
                 ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 10 - adim, ky + 80);
             }
             ctx.stroke();
-
             ctx.restore();
 
-
-            // --- ERKEK KARAKTER ---
             ctx.save();
             ctx.translate(erkek.x + (erkek.durum === "darbeAldi" ? erkek.sarsilmaX : 0), erkek.y);
-
             let ex = 0, ey = 30;
             ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 4;
 
-            // Kafa
             ctx.beginPath(); ctx.arc(ex, ey - 18, 15, 0, Math.PI * 2); ctx.stroke();
 
-            // Saçlar
             ctx.fillStyle = "#000000";
             ctx.beginPath();
             ctx.arc(ex - 8, ey - 32, 7, 0, Math.PI * 2); ctx.arc(ex, ey - 34, 8, 0, Math.PI * 2); ctx.arc(ex + 8, ey - 31, 7, 0, Math.PI * 2);
             ctx.fill();
 
-            // Gözlükler
             ctx.fillStyle = "#000000";
             ctx.beginPath();
             ctx.moveTo(ex - 16, ey - 23); ctx.bezierCurveTo(ex - 8, ey - 25, ex + 8, ey - 22, ex + 17, ey - 20); 
@@ -376,45 +353,38 @@
             ctx.strokeStyle = "#000000"; ctx.lineWidth = 2.5;
             ctx.beginPath(); ctx.moveTo(ex - 15, ey - 18); ctx.lineTo(ex - 20, ey - 16); ctx.stroke();
 
-            // Ağız
             ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 3;
             ctx.beginPath();
             if (erkek.durum === "darbeAldi") {
                 ctx.arc(ex, ey - 10, 4, 0, Math.PI * 2); 
             } else if (erkek.durum === "sarildi" || erkek.durum === "kosuyor") {
-                ctx.arc(ex, ey - 11, 6, 0, Math.PI); // Mutlu gülümseme
+                ctx.arc(ex, ey - 11, 6, 0, Math.PI); 
             } else {
                 ctx.arc(ex, ey - 11, 5, 0, Math.PI); 
             }
             ctx.stroke();
 
-            // Gövde
             ctx.lineWidth = 4; ctx.strokeStyle = "#ff6b81";
             ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex, ey + 50); ctx.stroke();
 
-            // Kollar
             ctx.beginPath();
             if (erkek.durum === "darbeAldi") {
                 ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 20, ey - 2);
                 ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 20, ey - 2);
             } else if (erkek.durum === "kosuyor") {
-                // Karşıdan gelene sarılmak için açılan kollar
-                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 22, ky + 6);
-                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 18, ky + 22);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 22, 36);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 18, 52);
             } else if (erkek.durum === "sarildi") {
-                // Kızı saran kol pozisyonu
-                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 25, ky + 15);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 25, 45);
             } else {
                 ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 18, ey + 28);
                 ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 18, ey + 28);
             }
             ctx.stroke();
 
-            // Pembe Balon Yapıları
             ctx.fillStyle = "rgba(255, 107, 129, 0.6)";
             ctx.beginPath(); ctx.arc(ex - 14, ey + 20, 10, 0, Math.PI*2); ctx.arc(ex + 14, ey + 20, 10, 0, Math.PI*2); ctx.fill();
 
-            // Bacaklar
             ctx.beginPath();
             if (erkek.durum === "darbeAldi") {
                 ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 18, ey + 85);
@@ -431,10 +401,8 @@
                 ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 12, ey + 85);
             }
             ctx.stroke();
-
             ctx.restore();
 
-            // --- EFEKTLER VE METİNLER ---
             kalpler.forEach(p => drawHeart(p.x, p.y, p.boyut / 2, "#ff4757", true));
             sarilmaKalpleri.forEach(h => drawHeart(h.x, h.y, h.boyut, "#ff3838", false));
 
@@ -444,7 +412,6 @@
                 ctx.fillText(y.metin, y.x, y.y);
             });
 
-            // --- YEŞİL ÇİMENLİ TEPELER ---
             ctx.fillStyle = "#4caf50";
             ctx.beginPath(); ctx.moveTo(0, canvas.height);
             for (let i = 0; i <= canvas.width + 150; i += 150) {
