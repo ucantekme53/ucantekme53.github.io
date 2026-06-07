@@ -164,7 +164,7 @@
                 kiz.y += kiz.hizY;
                 kiz.hizY += 0.5;
 
-                if (kiz.x + 75 >= PointX()) {
+                if (kiz.x + 75 >= erkek.x) {
                     yenenTekmeSkoru++;
                     kiz.durum = "geriDonuyor";
                     kiz.hizX = -9;
@@ -180,8 +180,8 @@
 
                     for (let i = 0; i < 6; i++) {
                         kalpler.push({
-                            x: erkek.x,
-                            y: PointY() + 20,
+                            x: PointX(),
+                            y: erkek.y + 20,
                             hizX: (Math.random() - 0.3) * 6,
                             hizY: (Math.random() - 0.7) * 6,
                             boyut: Math.random() * 10 + 8,
@@ -296,14 +296,14 @@
             }
         }
 
-        function PointX() { return erkek.x + (erkek.durum === "darbeAldi" ? PointSarsilma() : 0); }
-        function PointY() { return erkek.y; }
-        function PointSarsilma() { return erkek.sarsilmaX; }
+        function PointX() { 
+            return erkek.x + (erkek.durum === "darbeAldi" ? erkek.sarsilmaX : 0); 
+        }
 
         function ciz() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // GÜNEŞ (Yerinde duruyor ☀️)
+            // GÜNEŞ (Sabit duruyor ☀️)
             ctx.fillStyle = "#ffde17";
             ctx.beginPath(); ctx.arc(120, 100, 45, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = "#ffde17"; ctx.lineWidth = 5;
@@ -322,7 +322,7 @@
             drawHeart(370, 160, 20, "#ff4757");
             drawHeart(790, 230, 15, "#ff4757");
 
-            // KIZ KARAKTERİ
+            // KIZ KARAKTERİ ÇİZİMİ
             ctx.save();
             ctx.translate(kiz.x, kiz.y);
             let kx = 0, ky = 30;
@@ -330,4 +330,162 @@
 
             ctx.beginPath(); ctx.arc(kx, ky - 18, 14, 0, Math.PI * 2); ctx.stroke();
             ctx.fillStyle = "#ff6b81";
-            ctx.beginPath(); ctx.arc(kx - 5, ky - 20, 2, 0,
+            ctx.beginPath(); ctx.arc(kx - 5, ky - 20, 2, 0, Math.PI*2); ctx.arc(kx + 5, ky - 20, 2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(kx, ky - 15, 5, 0, Math.PI); ctx.stroke();
+
+            ctx.strokeStyle = "#8d6e63"; ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(kx - 10, ky - 25); ctx.bezierCurveTo(kx - 25, ky - 15, kx - 15, ky, kx - 22, ky + 25);
+            ctx.moveTo(kx + 10, ky - 25); ctx.bezierCurveTo(kx + 25, ky - 15, kx + 15, ky, kx + 22, ky + 25);
+            ctx.stroke();
+            ctx.fillStyle = "#ff6b81";
+            ctx.beginPath(); moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 22, ky - 34); ctx.lineTo(kx - 22, ky - 22); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 2, ky - 34); ctx.lineTo(kx - 2, ky - 22); ctx.closePath(); ctx.fill();
+
+            ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx, ky + 45); ctx.stroke();
+
+            ctx.beginPath();
+            if (kiz.durum === "havalaniyor") {
+                ctx.moveTo(kx, ky + 10); ctx.lineTo(kx - 18, ky - 2);
+                ctx.moveTo(kx, ky + 10); ctx.lineTo(kx + 12, ky - 5);
+            } else if (kiz.durum === "kosuyor") {
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 22, ky + 6);
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 18, ky + 22);
+            } else if (kiz.durum === "sarildi") {
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 25, ky + 15);
+            } else {
+                let salinim = Math.sin(kiz.animFrame * 0.15) * 8;
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx - 15 + salinim, ky + 28);
+                ctx.moveTo(kx, ky + 12); ctx.lineTo(kx + 15 - salinim, ky + 28);
+            }
+            ctx.stroke();
+
+            ctx.beginPath();
+            if (kiz.durum === "havalaniyor") {
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 44, ky + 32); 
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 12, ky + 62);
+            } else if (kiz.durum === "kosuyor") {
+                let adim = Math.sin(kiz.animFrame * 0.25) * 15;
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 8 + adim, ky + 80);
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 8 - adim, ky + 80);
+            } else if (kiz.durum === "sarildi") {
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 3, ky + 80);
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 5, ky + 80);
+            } else {
+                let adim = Math.sin(kiz.animFrame * 0.12) * 12;
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx - 10 + adim, ky + 80);
+                ctx.moveTo(kx, ky + 45); ctx.lineTo(kx + 10 - adim, ky + 80);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // ERKEK KARAKTERİ ÇİZİMİ
+            ctx.save();
+            ctx.translate(PointX(), erkek.y + 115);
+            ctx.rotate(erkek.aci);
+            ctx.translate(0, -115);
+
+            let ex = 0, ey = 30;
+            ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 4;
+
+            ctx.beginPath(); ctx.arc(ex, ey - 18, 15, 0, Math.PI * 2); ctx.stroke();
+
+            ctx.fillStyle = "#000000";
+            ctx.beginPath();
+            ctx.arc(ex - 8, ey - 32, 7, 0, Math.PI * 2); ctx.arc(ex, ey - 34, 8, 0, Math.PI * 2); ctx.arc(ex + 8, ey - 31, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = "#000000"; ctx.lineWidth = 3.5;
+            ctx.fillStyle = "#000000";
+            ctx.beginPath(); ctx.arc(ex - 7, ey - 18, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(ex + 7, ey - 17, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(ex - 1, ey - 18); ctx.lineTo(ex + 1, ey - 17);
+            ctx.moveTo(ex - 13, ey - 19); ctx.lineTo(ex - 18, ey - 17);
+            ctx.moveTo(ex + 13, ey - 16); ctx.lineTo(ex + 18, ey - 15);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 3;
+            ctx.beginPath();
+            if (erkek.durum === "darbeAldi" || erkek.durum === "yereDusuldu" || erkek.durum === "yerdenKalkiyor") {
+                ctx.arc(ex, ey - 8, 4, 0, Math.PI * 2); 
+            } else {
+                ctx.arc(ex, ey - 9, 5, 0, Math.PI); 
+            }
+            ctx.stroke();
+
+            ctx.lineWidth = 4; ctx.strokeStyle = "#ff6b81";
+            ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex, ey + 50); ctx.stroke();
+
+            ctx.beginPath();
+            if (erkek.durum === "darbeAldi" || erkek.durum === "yereDusuldu" || erkek.durum === "yerdenKalkiyor") {
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 20, ey - 2);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 20, ey - 2);
+            } else if (erkek.durum === "kosuyor") {
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 22, 36);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 18, 52);
+            } else if (erkek.durum === "sarildi") {
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 25, 45);
+            } else {
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex - 18, ey + 28);
+                ctx.moveTo(ex, ey + 12); ctx.lineTo(ex + 18, ey + 28);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = "rgba(255, 107, 129, 0.6)";
+            ctx.beginPath(); ctx.arc(ex - 14, ey + 20, 10, 0, Math.PI*2); ctx.arc(ex + 14, ey + 20, 10, 0, Math.PI*2); ctx.fill();
+
+            ctx.beginPath();
+            if (erkek.durum === "darbeAldi" || erkek.durum === "yereDusuldu" || erkek.durum === "yerdenKalkiyor") {
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 18, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 8, ey + 85);
+            } else if (erkek.durum === "kosuyor") {
+                let adim = Math.sin(erkek.animFrame * 0.25) * 15;
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 8 + adim, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 8 - adim, ey + 85);
+            } else if (erkek.durum === "sarildi") {
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 5, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 3, ey + 85);
+            } else {
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex - 12, ey + 85);
+                ctx.moveTo(ex, ey + 50); ctx.lineTo(ex + 12, ey + 85);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // PARÇACIKLAR VE TEXT EFEKTLERİ
+            kalpler.forEach(p => drawHeart(p.x, p.y, p.boyut / 2, "#ff4757", true));
+            sarilmaKalpleri.forEach(h => drawHeart(h.x, h.y, h.boyut, "#ff3838", false));
+
+            efektYazilari.forEach(y => {
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "bold 26px 'Caveat', cursive";
+                ctx.fillText(y.metin, y.x, y.y);
+            });
+
+            // YEŞİL ÇİMLER
+            ctx.fillStyle = "#4caf50";
+            ctx.beginPath(); ctx.moveTo(0, canvas.height);
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.lineTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.lineTo(canvas.width, canvas.height); ctx.fill();
+            
+            ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 4; ctx.beginPath();
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.moveTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.stroke();
+        }
+
+        function döngü() {
+            guncelle();
+            ciz();
+            requestAnimationFrame(döngü);
+        }
+
+        döngü();
+    </script>
+</body>
+</html>
