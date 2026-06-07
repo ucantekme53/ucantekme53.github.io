@@ -79,7 +79,7 @@
             y: 300,
             hizX: 0,
             hizY: 0,
-            durum: "yuruyor", // yuruyor, havalaniyor, geriDonuyor, yerindeBekliyor, kosuyor, sarildi, otomatikUcanTekme, sonDarbe, sonDarbeGeriDonus
+            durum: "yuruyor", 
             animFrame: 0
         };
 
@@ -88,7 +88,7 @@
             x: 620,
             y: 295,
             sarsilmaX: 0,
-            durum: "normal", // normal, darbeAldi, yereDusuldu, yerdenKalkiyor, kosuyor, sarildi, sonDarbeUcus, yerdeYatiyor
+            durum: "normal", 
             animFrame: 0,
             aci: 0,
             hizX: 0,
@@ -96,7 +96,6 @@
         };
 
         function tetikleUcanTekme() {
-            // Eğer oyun bittiyse tıklama ile her şeyi ilk haline sıfırla
             if (kiz.durum === "sonDarbe" || (kiz.durum === "sarildi" && sonTekmeAtildi) || erkek.durum === "yerdeYatiyor") {
                 yenenTekmeSkoru = 0;
                 sonTekmeAtildi = false;
@@ -179,7 +178,6 @@
                     kiz.hizX = -9;
                     kiz.hizY = -4;
 
-                    // Dinamik tepki yazıları
                     if (yenenTekmeSkoru === 1) {
                         efektYazilari.push({
                             x: erkek.x - 100,
@@ -291,7 +289,6 @@
                 }
             }
 
-            // SARILMA VE KOMEDİ MEKANİĞİ
             if (kiz.durum === "sarildi" && !sonTekmeAtildi) {
                 sarilmaZamanlayicisi++;
                 
@@ -305,7 +302,6 @@
                     });
                 }
 
-                // Zaman dolunca kız otomatik son tekmeyi vuruyor
                 if (sarilmaZamanlayicisi >= 130) {
                     sarilmaKalpleri = []; 
                     kiz.durum = "otomatikUcanTekme";
@@ -314,7 +310,6 @@
                 }
             }
 
-            // Otomatik Son Tekme Havalanması
             if (kiz.durum === "otomatikUcanTekme") {
                 kiz.x += kiz.hizX;
                 kiz.y += kiz.hizY;
@@ -348,7 +343,6 @@
                     erkek.aci += 0.09;
                 }
 
-                // Ekran sınırını koru
                 if (erkek.x >= canvas.width - 60) {
                     erkek.x = canvas.width - 60;
                     erkek.hizX = 0;
@@ -548,30 +542,14 @@
             ctx.stroke();
             ctx.restore();
 
-            // DIALOG BALONU
-            if (kiz.durum === "sarildi" && sarilmaZamanlayicisi >= 40 && sarilmaZamanlayicisi < 130) {
+            // Sadece Havada Süzülen Sarılma Yazısı (image_bad424.png tarzında)
+            if (kiz.durum === "sarildi" && sarilmaZamanlayicisi >= 30 && sarilmaZamanlayicisi < 130) {
                 ctx.save();
-                ctx.fillStyle = "#ffffff";
-                ctx.strokeStyle = "#ff6b81";
-                ctx.lineWidth = 3;
-                
-                ctx.beginPath();
-                ctx.roundRect(430, 160, 200, 50, 15); // Biraz daha geniş kutu
-                ctx.fill();
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.moveTo(460, 210);
-                ctx.lineTo(450, 225);
-                ctx.lineTo(475, 210);
-                ctx.fillStyle = "#ffffff";
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = "#1e1b4b";
-                ctx.font = "bold 20px 'Inter', sans-serif";
+                ctx.fillStyle = "#ff4757";
+                ctx.font = "bold 26px 'Caveat', cursive";
                 ctx.textAlign = "center";
-                ctx.fillText("numaranı verecek misin artık", 530, 192); // Yeni metin
+                // Karakterlerin hemen üstünde havada duracak şekilde konumlandırıldı
+                ctx.fillText("numaranı verecek misin artık", 400, 200);
                 ctx.restore();
             }
 
