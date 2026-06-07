@@ -303,7 +303,7 @@
         function ciz() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // GÜNEŞ (Sabit duruyor ☀️)
+            // 1. ARKA PLAN: GÜNEŞ (Sabit duruyor ☀️)
             ctx.fillStyle = "#ffde17";
             ctx.beginPath(); ctx.arc(120, 100, 45, 0, Math.PI * 2); ctx.fill();
             ctx.strokeStyle = "#ffde17"; ctx.lineWidth = 5;
@@ -314,7 +314,7 @@
                 ctx.stroke();
             }
 
-            // BULUTLAR
+            // 2. ARKA PLAN: BULUTLAR
             ctx.fillStyle = "#29b6f6";
             ctx.beginPath(); ctx.arc(640, 80, 35, 0, Math.PI*2); ctx.arc(680, 70, 45, 0, Math.PI*2); ctx.arc(720, 80, 35, 0, Math.PI*2); ctx.fill();
             ctx.beginPath(); ctx.arc(440, 100, 30, 0, Math.PI*2); ctx.arc(475, 90, 38, 0, Math.PI*2); ctx.arc(510, 100, 30, 0, Math.PI*2); ctx.fill();
@@ -322,7 +322,21 @@
             drawHeart(370, 160, 20, "#ff4757");
             drawHeart(790, 230, 15, "#ff4757");
 
-            // KIZ KARAKTERİ ÇİZİMİ
+            // 3. ARKA PLAN: YEŞİL ÇİMLER (Karakterlerin arkasında kalması için en başta çiziliyor)
+            ctx.fillStyle = "#4caf50";
+            ctx.beginPath(); ctx.moveTo(0, canvas.height);
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.lineTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.lineTo(canvas.width, canvas.height); ctx.fill();
+            
+            ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 4; ctx.beginPath();
+            for (let i = 0; i <= canvas.width + 150; i += 150) {
+                ctx.moveTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
+            }
+            ctx.stroke();
+
+            // 4. KARAKTER: KIZ KARAKTERİ ÇİZİMİ
             ctx.save();
             ctx.translate(kiz.x, kiz.y);
             let kx = 0, ky = 30;
@@ -339,8 +353,8 @@
             ctx.moveTo(kx + 10, ky - 25); ctx.bezierCurveTo(kx + 25, ky - 15, kx + 15, ky, kx + 22, ky + 25);
             ctx.stroke();
             ctx.fillStyle = "#ff6b81";
-            ctx.beginPath(); moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 22, ky - 34); ctx.lineTo(kx - 22, ky - 22); ctx.closePath(); ctx.fill();
-            ctx.beginPath(); moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 2, ky - 34); ctx.lineTo(kx - 2, ky - 22); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 22, ky - 34); ctx.lineTo(kx - 22, ky - 22); ctx.closePath(); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(kx - 12, ky - 28); ctx.lineTo(kx - 2, ky - 34); ctx.lineTo(kx - 2, ky - 22); ctx.closePath(); ctx.fill();
 
             ctx.strokeStyle = "#ff6b81"; ctx.lineWidth = 4;
             ctx.beginPath(); ctx.moveTo(kx, ky); ctx.lineTo(kx, ky + 45); ctx.stroke();
@@ -380,7 +394,7 @@
             ctx.stroke();
             ctx.restore();
 
-            // ERKEK KARAKTERİ ÇİZİMİ
+            // 5. KARAKTER: ERKEK KARAKTERİ ÇİZİMİ (Artık çimlerin üzerinde yattığı net görünecek)
             ctx.save();
             ctx.translate(PointX(), erkek.y + 115);
             ctx.rotate(erkek.aci);
@@ -454,7 +468,7 @@
             ctx.stroke();
             ctx.restore();
 
-            // PARÇACIKLAR VE TEXT EFEKTLERİ
+            // 6. EFEKTLER VE PARÇACIKLAR
             kalpler.forEach(p => drawHeart(p.x, p.y, p.boyut / 2, "#ff4757", true));
             sarilmaKalpleri.forEach(h => drawHeart(h.x, h.y, h.boyut, "#ff3838", false));
 
@@ -463,20 +477,6 @@
                 ctx.font = "bold 26px 'Caveat', cursive";
                 ctx.fillText(y.metin, y.x, y.y);
             });
-
-            // YEŞİL ÇİMLER
-            ctx.fillStyle = "#4caf50";
-            ctx.beginPath(); ctx.moveTo(0, canvas.height);
-            for (let i = 0; i <= canvas.width + 150; i += 150) {
-                ctx.lineTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
-            }
-            ctx.lineTo(canvas.width, canvas.height); ctx.fill();
-            
-            ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 4; ctx.beginPath();
-            for (let i = 0; i <= canvas.width + 150; i += 150) {
-                ctx.moveTo(i, 400); ctx.bezierCurveTo(i + 50, 360, i + 100, 360, i + 150, 400);
-            }
-            ctx.stroke();
         }
 
         function döngü() {
